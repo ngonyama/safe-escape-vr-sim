@@ -22,14 +22,15 @@ const OfficeEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: string
   });
   
   useEffect(() => {
-    // Set initial position
-    playerRef.current.position.set(0, 1.6, 0);
+    // Set initial position - lower height from 1.6 to 1.0 for a more grounded view
+    playerRef.current.position.set(0, 1.0, 0);
     scene.add(playerRef.current);
     
-    // Add camera to player
+    // Add camera to player - set initial camera angle slightly downward
     playerRef.current.add(camera);
     camera.position.set(0, 0, 0);
-    camera.lookAt(0, 0, -1);
+    camera.rotation.x = 0.1; // Slight downward tilt to see what's in front better
+    camera.lookAt(0, -0.5, -1);
     
     // Handle keyboard events
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -117,13 +118,16 @@ const OfficeEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: string
     };
   }, [scene, camera, lookState.isLooking, lookState.lookX, lookState.lookY]);
   
-  // Movement system
+  // Movement system with lower speed and adjusted collisions
   useFrame(() => {
-    const speed = 0.05;
+    const speed = 0.03; // Reduced speed for more realistic walking pace
     if (moveState.forward) playerRef.current.translateZ(-speed);
     if (moveState.backward) playerRef.current.translateZ(speed);
     if (moveState.left) playerRef.current.rotateY(0.02);
     if (moveState.right) playerRef.current.rotateY(-0.02);
+    
+    // Keep player at a consistent height (no flying)
+    playerRef.current.position.y = 1.0;
   });
   
   return (
@@ -339,7 +343,7 @@ const VREnvironment = ({ environmentType, scenarioType, onCompleteTask }: VREnvi
       
       <Canvas
         shadows
-        camera={{ position: [0, 1.6, 5], fov: 70 }}
+        camera={{ position: [0, 1.0, 5], fov: 70 }} 
         style={{ height: '100%', width: '100%', cursor: 'pointer' }}
       >
         {/* For now we're only supporting office environment */}
