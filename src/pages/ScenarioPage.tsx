@@ -44,6 +44,9 @@ const ScenarioPage = () => {
   // Hazard performance data for chart
   const [hazardPerformance, setHazardPerformance] = useState<PerformanceData[]>([]);
 
+  // Add a complete button functionality
+  const [manualComplete, setManualComplete] = useState(false);
+
   // In a real app, we'd fetch this from an API
   useEffect(() => {
     // Simulate loading scenario data
@@ -121,29 +124,40 @@ const ScenarioPage = () => {
       task.id === taskId ? { ...task, completed: true } : task
     ));
     
-    // Check if all tasks are completed
+    // Check if all tasks are completed or manual complete is triggered
     const updatedTasks = tasks.map(task => 
       task.id === taskId ? { ...task, completed: true } : task
     );
     
-    if (updatedTasks.every(task => task.completed)) {
-      // Calculate score based on completed tasks
-      const completedTasks = updatedTasks.filter(task => task.completed).length;
-      const totalTasks = updatedTasks.length;
-      const calculatedScore = Math.round((completedTasks / totalTasks) * 100);
-      
-      // Calculate time spent
-      if (startTime) {
-        const endTime = Date.now();
-        const timeElapsed = Math.floor((endTime - startTime) / 1000); // in seconds
-        setTimeSpent(timeElapsed);
-      }
-      
-      // Generate performance metrics (simulated in this demo)
-      generatePerformanceMetrics(calculatedScore);
-      
-      setScore(calculatedScore);
+    if (updatedTasks.every(task => task.completed) || manualComplete) {
+      completeScenario(updatedTasks);
     }
+  };
+
+  // New function to manually complete the scenario
+  const handleManualComplete = () => {
+    setManualComplete(true);
+    completeScenario(tasks);
+  };
+
+  // Extracted scenario completion logic
+  const completeScenario = (currentTasks: Task[]) => {
+    // Calculate score based on completed tasks
+    const completedTasks = currentTasks.filter(task => task.completed).length;
+    const totalTasks = currentTasks.length;
+    const calculatedScore = Math.round((completedTasks / totalTasks) * 100);
+    
+    // Calculate time spent
+    if (startTime) {
+      const endTime = Date.now();
+      const timeElapsed = Math.floor((endTime - startTime) / 1000); // in seconds
+      setTimeSpent(timeElapsed);
+    }
+    
+    // Generate performance metrics (simulated in this demo)
+    generatePerformanceMetrics(calculatedScore);
+    
+    setScore(calculatedScore);
   };
 
   const generatePerformanceMetrics = (score: number) => {
@@ -537,14 +551,21 @@ const ScenarioPage = () => {
             </div>
           ))}
         </div>
-        <Button 
-          variant="outline" 
-          size="sm" 
-          onClick={handleExit} 
-          className="mt-4 w-full"
-        >
-          Exit
-        </Button>
+        <div className="mt-4 flex flex-col space-y-2">
+          <Button 
+            onClick={handleManualComplete}
+            className="bg-green-500 hover:bg-green-600 text-white"
+          >
+            Complete Training
+          </Button>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={handleExit} 
+          >
+            Exit
+          </Button>
+        </div>
       </div>
       
       {/* VR Environment */}
