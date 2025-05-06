@@ -14,30 +14,29 @@ const OfficeEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: string
     right: false,
   });
   
-  // Add mouse control for looking up/down
-  const [lookState, setLookState] = useState({
-    isLooking: false,
-    lookX: 0,
-    lookY: 0,
-  });
+  // Camera look direction state
+  const [lookUpDown, setLookUpDown] = useState(0);
   
   useEffect(() => {
-    // Set initial position - lower height from 1.6 to 1.0 for a more grounded view
-    playerRef.current.position.set(0, 1.0, 0);
+    // Set initial position - even lower height (0.7) for a more realistic view
+    playerRef.current.position.set(0, 0.7, 0);
     scene.add(playerRef.current);
     
-    // Add camera to player - set initial camera angle slightly downward
+    // Add camera to player with neutral angle
     playerRef.current.add(camera);
     camera.position.set(0, 0, 0);
-    camera.rotation.x = 0.1; // Slight downward tilt to see what's in front better
-    camera.lookAt(0, -0.5, -1);
+    camera.rotation.x = 0; // Start with a neutral view
     
-    // Handle keyboard events
+    // Handle keyboard events for movement
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'w' || e.key === 'ArrowUp') setMoveState(prev => ({ ...prev, forward: true }));
       if (e.key === 's' || e.key === 'ArrowDown') setMoveState(prev => ({ ...prev, backward: true }));
       if (e.key === 'a' || e.key === 'ArrowLeft') setMoveState(prev => ({ ...prev, left: true }));
       if (e.key === 'd' || e.key === 'ArrowRight') setMoveState(prev => ({ ...prev, right: true }));
+      
+      // Look up and down with Q and E keys
+      if (e.key === 'q') setLookUpDown(1); // Look up
+      if (e.key === 'e') setLookUpDown(-1); // Look down
     };
     
     const handleKeyUp = (e: KeyboardEvent) => {
@@ -45,89 +44,43 @@ const OfficeEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: string
       if (e.key === 's' || e.key === 'ArrowDown') setMoveState(prev => ({ ...prev, backward: false }));
       if (e.key === 'a' || e.key === 'ArrowLeft') setMoveState(prev => ({ ...prev, left: false }));
       if (e.key === 'd' || e.key === 'ArrowRight') setMoveState(prev => ({ ...prev, right: false }));
-    };
-    
-    // Mouse look control - fixed version
-    const handleMouseDown = (e: MouseEvent) => {
-      // Only trigger mouse look when clicking on the canvas
-      const canvas = document.querySelector('canvas');
-      if (canvas && e.target === canvas) {
-        setLookState(prev => ({
-          ...prev,
-          isLooking: true,
-          lookX: e.clientX,
-          lookY: e.clientY
-        }));
-      }
-    };
-    
-    const handleMouseMove = (e: MouseEvent) => {
-      if (lookState.isLooking) {
-        // Calculate deltas
-        const deltaX = e.clientX - lookState.lookX;
-        const deltaY = e.clientY - lookState.lookY;
-        
-        // Rotate player horizontally (left/right)
-        playerRef.current.rotateY(-deltaX * 0.005);
-        
-        // Tilt camera vertically (up/down) with limits to prevent flipping
-        const currentRotation = camera.rotation.x;
-        const newRotation = currentRotation - deltaY * 0.005;
-        // Limit vertical rotation to prevent flipping (approximately -85° to 85°)
-        const maxRotation = Math.PI * 0.47;
-        camera.rotation.x = Math.max(-maxRotation, Math.min(maxRotation, newRotation));
-        
-        // Update look position
-        setLookState(prev => ({
-          ...prev,
-          lookX: e.clientX,
-          lookY: e.clientY
-        }));
-      }
-    };
-    
-    const handleMouseUp = () => {
-      setLookState(prev => ({
-        ...prev,
-        isLooking: false
-      }));
-    };
-    
-    // Also prevent context menu to improve user experience
-    const preventContextMenu = (e: MouseEvent) => {
-      e.preventDefault();
+      
+      // Stop looking when keys are released
+      if (e.key === 'q' || e.key === 'e') setLookUpDown(0);
     };
     
     // Add event listeners
     document.addEventListener('keydown', handleKeyDown);
     document.addEventListener('keyup', handleKeyUp);
-    document.addEventListener('mousedown', handleMouseDown);
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleMouseUp);
-    document.addEventListener('contextmenu', preventContextMenu);
     
     return () => {
       // Clean up event listeners and scene objects
       document.removeEventListener('keydown', handleKeyDown);
       document.removeEventListener('keyup', handleKeyUp);
-      document.removeEventListener('mousedown', handleMouseDown);
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
-      document.removeEventListener('contextmenu', preventContextMenu);
       scene.remove(playerRef.current);
     };
-  }, [scene, camera, lookState.isLooking, lookState.lookX, lookState.lookY]);
+  }, [scene, camera]);
   
-  // Movement system with lower speed and adjusted collisions
+  // Movement and look system
   useFrame(() => {
-    const speed = 0.03; // Reduced speed for more realistic walking pace
+    const speed = 0.03; // Maintain reduced speed for realistic walking pace
     if (moveState.forward) playerRef.current.translateZ(-speed);
     if (moveState.backward) playerRef.current.translateZ(speed);
     if (moveState.left) playerRef.current.rotateY(0.02);
     if (moveState.right) playerRef.current.rotateY(-0.02);
     
-    // Keep player at a consistent height (no flying)
-    playerRef.current.position.y = 1.0;
+    // Handle looking up/down with Q and E keys
+    if (lookUpDown !== 0) {
+      // Get current rotation
+      const currentRotation = camera.rotation.x;
+      const newRotation = currentRotation - lookUpDown * 0.02;
+      // Limit vertical rotation to prevent flipping (approximately -85° to 85°)
+      const maxRotation = Math.PI * 0.47;
+      camera.rotation.x = Math.max(-maxRotation, Math.min(maxRotation, newRotation));
+    }
+    
+    // Keep player at a consistent low height (no flying)
+    playerRef.current.position.y = 0.7;
   });
   
   return (
@@ -336,15 +289,15 @@ const VREnvironment = ({ environmentType, scenarioType, onCompleteTask }: VREnvi
   return (
     <div className="relative h-full w-full">
       <div className="absolute bottom-4 left-4 z-10 bg-black bg-opacity-60 p-2 rounded text-white text-sm">
-        <p>Controls: W/↑ (forward), S/↓ (backward), A/← (turn left), D/→ (turn right)</p>
-        <p>Mouse: <strong>Click on the scene</strong> and drag to look around</p>
+        <p>Movement: W/↑ (forward), S/↓ (backward), A/← (turn left), D/→ (turn right)</p>
+        <p>Look: Q (look up), E (look down)</p>
         <p>Click on objects to interact with them</p>
       </div>
       
       <Canvas
         shadows
-        camera={{ position: [0, 1.0, 5], fov: 70 }} 
-        style={{ height: '100%', width: '100%', cursor: 'pointer' }}
+        camera={{ position: [0, 0.7, 5], fov: 70 }} 
+        style={{ height: '100%', width: '100%' }}
       >
         {/* For now we're only supporting office environment */}
         <OfficeEnvironment onCompleteTask={onCompleteTask} />
