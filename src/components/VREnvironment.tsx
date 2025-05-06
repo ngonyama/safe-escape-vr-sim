@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useState } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { OrbitControls, useGLTF, Text } from '@react-three/drei';
@@ -86,39 +85,39 @@ const OfficeEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: string
   
   return (
     <>
-      {/* Floor */}
+      {/* Floor - Brightened */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
         <planeGeometry args={[50, 50]} />
-        <meshStandardMaterial color="#cccccc" />
+        <meshStandardMaterial color="#e0e0e0" />
       </mesh>
       
-      {/* Walls */}
+      {/* Walls - Brightened */}
       <mesh position={[0, 2, -10]} castShadow receiveShadow>
         <boxGeometry args={[20, 4, 0.2]} />
-        <meshStandardMaterial color="#f0f0f0" />
+        <meshStandardMaterial color="#ffffff" />
       </mesh>
       
       <mesh position={[0, 2, 10]} castShadow receiveShadow>
         <boxGeometry args={[20, 4, 0.2]} />
-        <meshStandardMaterial color="#f0f0f0" />
+        <meshStandardMaterial color="#ffffff" />
       </mesh>
       
       <mesh position={[-10, 2, 0]} castShadow receiveShadow>
         <boxGeometry args={[0.2, 4, 20]} />
-        <meshStandardMaterial color="#f0f0f0" />
+        <meshStandardMaterial color="#ffffff" />
       </mesh>
       
       <mesh position={[10, 2, 0]} castShadow receiveShadow>
         <boxGeometry args={[0.2, 4, 20]} />
-        <meshStandardMaterial color="#f0f0f0" />
+        <meshStandardMaterial color="#ffffff" />
       </mesh>
       
       {/* Exit door */}
       <InteractiveObject
         position={[9.9, 1, -5]}
         geometry={[1.6, 2, 0.1]}
-        color="#8b4513"
-        hoverColor="#a56035"
+        color="#a56035"
+        hoverColor="#c07946"
         taskId="4"
         onInteract={onCompleteTask}
         label="Exit Door"
@@ -128,8 +127,8 @@ const OfficeEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: string
       <InteractiveObject
         position={[5, 0.7, 9.7]}
         geometry={[0.4, 1.4, 0.4]}
-        color="#ff0000"
-        hoverColor="#ff3333"
+        color="#ff3333"
+        hoverColor="#ff5555"
         taskId="1"
         onInteract={onCompleteTask}
         label="Fire Extinguisher"
@@ -139,44 +138,47 @@ const OfficeEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: string
       <InteractiveObject
         position={[9.7, 2.5, -5]}
         geometry={[0.1, 0.5, 0.5]}
-        color="#00cc00"
-        hoverColor="#33ff33"
+        color="#33ff33"
+        hoverColor="#55ff55"
         taskId="3"
         onInteract={onCompleteTask}
         label="Evacuation Sign"
       />
 
-      {/* Office furniture */}
+      {/* Office furniture - Brightened */}
       <mesh position={[0, 0.4, 0]} castShadow>
         <boxGeometry args={[2, 0.8, 1]} />
-        <meshStandardMaterial color="#5c5c5c" />
+        <meshStandardMaterial color="#7a7a7a" />
       </mesh>
       
       <mesh position={[0, 0.1, 2]} castShadow>
         <boxGeometry args={[1.2, 0.2, 1.2]} />
-        <meshStandardMaterial color="#8b4513" />
+        <meshStandardMaterial color="#a56035" />
       </mesh>
 
       <mesh position={[0, 0.55, 2]} castShadow>
         <boxGeometry args={[0.5, 0.7, 0.5]} />
-        <meshStandardMaterial color="#ff0000" />
+        <meshStandardMaterial color="#ff3333" />
       </mesh>
       
-      {/* Lights */}
-      <ambientLight intensity={0.5} />
-      <hemisphereLight intensity={0.5} />
+      {/* Enhanced Lighting */}
+      <ambientLight intensity={1.0} /> {/* Doubled from 0.5 */}
+      <hemisphereLight intensity={0.8} skyColor="#ffffff" groundColor="#bbbbff" /> {/* Enhanced and added colors */}
       <directionalLight
         position={[10, 10, 10]}
-        intensity={0.5}
+        intensity={1.0} {/* Doubled from 0.5 */}
         castShadow
         shadow-mapSize-width={1024}
         shadow-mapSize-height={1024}
       />
+      {/* Additional light sources */}
+      <pointLight position={[-5, 5, 0]} intensity={0.6} color="#fffaea" />
+      <pointLight position={[5, 3, -5]} intensity={0.6} color="#eaffff" />
     </>
   );
 };
 
-// Factory Environment for industrial scenarios
+// Factory Environment for industrial scenarios - Enhanced lighting
 const FactoryEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: string) => void }) => {
   const { scene, camera } = useThree();
   const playerRef = useRef<THREE.Group>(new THREE.Group());
@@ -251,72 +253,72 @@ const FactoryEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: strin
   
   return (
     <>
-      {/* Factory floor */}
+      {/* Factory floor - Brightened */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
         <planeGeometry args={[50, 50]} />
-        <meshStandardMaterial color="#555555" />
+        <meshStandardMaterial color="#777777" />
       </mesh>
       
-      {/* Factory walls */}
+      {/* Factory walls - Brightened */}
       <mesh position={[0, 3, -15]} castShadow receiveShadow>
         <boxGeometry args={[30, 6, 0.3]} />
-        <meshStandardMaterial color="#777777" />
+        <meshStandardMaterial color="#a0a0a0" />
       </mesh>
       
       <mesh position={[0, 3, 15]} castShadow receiveShadow>
         <boxGeometry args={[30, 6, 0.3]} />
-        <meshStandardMaterial color="#777777" />
+        <meshStandardMaterial color="#a0a0a0" />
       </mesh>
       
       <mesh position={[-15, 3, 0]} castShadow receiveShadow>
         <boxGeometry args={[0.3, 6, 30]} />
-        <meshStandardMaterial color="#777777" />
+        <meshStandardMaterial color="#a0a0a0" />
       </mesh>
       
       <mesh position={[15, 3, 0]} castShadow receiveShadow>
         <boxGeometry args={[0.3, 6, 30]} />
-        <meshStandardMaterial color="#777777" />
+        <meshStandardMaterial color="#a0a0a0" />
       </mesh>
       
-      {/* Industrial machinery */}
+      {/* Industrial machinery - Brightened */}
       <mesh position={[-5, 1.2, -5]} castShadow>
         <boxGeometry args={[3, 2.4, 2]} />
-        <meshStandardMaterial color="#3b5e7f" />
+        <meshStandardMaterial color="#4b7eaf" />
       </mesh>
       
       <mesh position={[-5, 2.6, -5]} castShadow>
         <cylinderGeometry args={[0.5, 0.5, 1, 16]} />
+        <meshStandardMaterial color="#888888" />
+      </mesh>
+      
+      {/* Assembly line - Brightened */}
+      <mesh position={[0, 0.5, 0]} castShadow>
+        <boxGeometry args={[15, 1, 2]} />
         <meshStandardMaterial color="#666666" />
       </mesh>
       
-      {/* Assembly line */}
-      <mesh position={[0, 0.5, 0]} castShadow>
-        <boxGeometry args={[15, 1, 2]} />
-        <meshStandardMaterial color="#444444" />
-      </mesh>
-      
-      {/* Small boxes on assembly line */}
+      {/* Small boxes on assembly line - Brightened */}
       <mesh position={[-4, 1.2, 0]} castShadow>
         <boxGeometry args={[0.8, 0.8, 0.8]} />
-        <meshStandardMaterial color="#a87d3d" />
+        <meshStandardMaterial color="#c89d5d" />
       </mesh>
       
       <mesh position={[-2, 1.2, 0]} castShadow>
         <boxGeometry args={[0.8, 0.8, 0.8]} />
-        <meshStandardMaterial color="#a87d3d" />
+        <meshStandardMaterial color="#c89d5d" />
       </mesh>
       
       <mesh position={[0, 1.2, 0]} castShadow>
         <boxGeometry args={[0.8, 0.8, 0.8]} />
-        <meshStandardMaterial color="#a87d3d" />
+        <meshStandardMaterial color="#c89d5d" />
       </mesh>
       
-      {/* Industrial hazards */}
+      {/* Industrial hazards - Brightened */}
       <InteractiveObject
         position={[5, 0.3, -8]}
         geometry={[4, 0.1, 2]}
-        color="#ffcc00"
-        hoverColor="#ffdd33"
+        color="#ffdd33"
+        hoverColor="#ffee55"
         taskId="2"
         onInteract={onCompleteTask}
         label="Slippery Floor"
@@ -325,8 +327,8 @@ const FactoryEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: strin
       <InteractiveObject
         position={[-8, 1, 8]}
         geometry={[0.5, 1, 0.5]}
-        color="#ff0000"
-        hoverColor="#ff3333"
+        color="#ff3333"
+        hoverColor="#ff5555"
         taskId="1"
         onInteract={onCompleteTask}
         label="Fire Extinguisher"
@@ -335,8 +337,8 @@ const FactoryEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: strin
       <InteractiveObject
         position={[14.9, 2, -5]}
         geometry={[0.1, 1.5, 2]}
-        color="#33cc33"
-        hoverColor="#55dd55"
+        color="#55dd55"
+        hoverColor="#77ff77"
         taskId="3"
         onInteract={onCompleteTask}
         label="Emergency Exit"
@@ -345,23 +347,26 @@ const FactoryEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: strin
       <InteractiveObject
         position={[14.9, 1, -5]}
         geometry={[0.1, 2, 1.5]}
-        color="#8b4513"
-        hoverColor="#a56035"
+        color="#a56035"
+        hoverColor="#c07946"
         taskId="4"
         onInteract={onCompleteTask}
         label="Exit Door"
       />
       
-      {/* Lights */}
-      <ambientLight intensity={0.3} />
-      <pointLight position={[0, 5, 0]} intensity={0.8} castShadow />
-      <pointLight position={[-10, 5, -10]} intensity={0.5} castShadow />
-      <pointLight position={[10, 5, 10]} intensity={0.5} castShadow />
+      {/* Enhanced Lighting */}
+      <ambientLight intensity={0.6} /> {/* Doubled from 0.3 */}
+      <pointLight position={[0, 5, 0]} intensity={1.2} color="#ffffff" castShadow /> {/* Increased from 0.8 */}
+      <pointLight position={[-10, 5, -10]} intensity={0.8} color="#fffaea" castShadow /> {/* Increased from 0.5 */}
+      <pointLight position={[10, 5, 10]} intensity={0.8} color="#eaffff" castShadow /> {/* Increased from 0.5 */}
+      {/* Additional light sources */}
+      <pointLight position={[0, 3, -10]} intensity={0.6} color="#fffdea" />
+      <pointLight position={[-8, 3, 0]} intensity={0.5} color="#eaffff" />
     </>
   );
 };
 
-// Warehouse Environment
+// Warehouse Environment - Enhanced lighting
 const WarehouseEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: string) => void }) => {
   const { scene, camera } = useThree();
   const playerRef = useRef<THREE.Group>(new THREE.Group());
@@ -434,25 +439,25 @@ const WarehouseEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: str
     playerRef.current.position.y = 0.7;
   });
   
-  // Create shelving unit
+  // Create shelving unit - Brightened colors
   const createShelf = (posX: number, posZ: number, rotation: number = 0) => {
     return (
       <group position={[posX, 0, posZ]} rotation={[0, rotation, 0]}>
         {/* Shelf structure */}
         <mesh position={[0, 2, 0]} castShadow>
           <boxGeometry args={[1, 4, 6]} />
-          <meshStandardMaterial color="#555555" />
+          <meshStandardMaterial color="#777777" />
         </mesh>
         
         {/* Shelf levels */}
         {[0.5, 1.5, 2.5, 3.5].map((height, index) => (
           <mesh key={index} position={[0, height, 0]} castShadow>
             <boxGeometry args={[1.2, 0.1, 6.2]} />
-            <meshStandardMaterial color="#333333" />
+            <meshStandardMaterial color="#555555" />
           </mesh>
         ))}
         
-        {/* Boxes on shelves (randomly placed) */}
+        {/* Boxes on shelves (randomly placed) - Brightened */}
         {Array.from({ length: 8 }).map((_, index) => {
           const level = Math.floor(index / 2);
           const xOffset = (index % 2) * 0.4 - 0.2;
@@ -464,7 +469,7 @@ const WarehouseEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: str
               castShadow
             >
               <boxGeometry args={[0.8, 0.6, 0.8]} />
-              <meshStandardMaterial color={["#a87d3d", "#8b5a2b", "#654321"][index % 3]} />
+              <meshStandardMaterial color={["#c89d5d", "#b87a4b", "#855431"][index % 3]} />
             </mesh>
           );
         })}
@@ -474,31 +479,31 @@ const WarehouseEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: str
   
   return (
     <>
-      {/* Warehouse floor */}
+      {/* Warehouse floor - Brightened */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
         <planeGeometry args={[50, 50]} />
-        <meshStandardMaterial color="#333333" />
+        <meshStandardMaterial color="#555555" />
       </mesh>
       
-      {/* Warehouse walls */}
+      {/* Warehouse walls - Brightened */}
       <mesh position={[0, 4, -15]} castShadow receiveShadow>
         <boxGeometry args={[30, 8, 0.3]} />
-        <meshStandardMaterial color="#555555" />
+        <meshStandardMaterial color="#777777" />
       </mesh>
       
       <mesh position={[0, 4, 15]} castShadow receiveShadow>
         <boxGeometry args={[30, 8, 0.3]} />
-        <meshStandardMaterial color="#555555" />
+        <meshStandardMaterial color="#777777" />
       </mesh>
       
       <mesh position={[-15, 4, 0]} castShadow receiveShadow>
         <boxGeometry args={[0.3, 8, 30]} />
-        <meshStandardMaterial color="#555555" />
+        <meshStandardMaterial color="#777777" />
       </mesh>
       
       <mesh position={[15, 4, 0]} castShadow receiveShadow>
         <boxGeometry args={[0.3, 8, 30]} />
-        <meshStandardMaterial color="#555555" />
+        <meshStandardMaterial color="#777777" />
       </mesh>
       
       {/* Shelving units */}
@@ -509,46 +514,46 @@ const WarehouseEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: str
       {createShelf(5, 0)}
       {createShelf(5, 8)}
       
-      {/* Forklift */}
+      {/* Forklift - Brightened */}
       <group position={[0, 0, -5]}>
         <mesh position={[0, 0.5, 0]} castShadow>
           <boxGeometry args={[1.5, 1, 2.5]} />
-          <meshStandardMaterial color="#ffd700" />
+          <meshStandardMaterial color="#ffeb00" />
         </mesh>
         
         <mesh position={[0, 1.3, -0.7]} castShadow>
           <boxGeometry args={[1.3, 0.6, 0.8]} />
-          <meshStandardMaterial color="#ffd700" />
+          <meshStandardMaterial color="#ffeb00" />
         </mesh>
         
         <mesh position={[0, 0.3, 1.5]} castShadow>
           <boxGeometry args={[1.2, 0.2, 0.5]} />
-          <meshStandardMaterial color="#444444" />
+          <meshStandardMaterial color="#666666" />
         </mesh>
       </group>
       
-      {/* Pallets */}
+      {/* Pallets - Brightened */}
       <mesh position={[0, 0.1, 5]} castShadow>
         <boxGeometry args={[1.2, 0.2, 1.2]} />
-        <meshStandardMaterial color="#8b4513" />
+        <meshStandardMaterial color="#a56035" />
       </mesh>
       
       <mesh position={[2, 0.1, 5]} castShadow>
         <boxGeometry args={[1.2, 0.2, 1.2]} />
-        <meshStandardMaterial color="#8b4513" />
+        <meshStandardMaterial color="#a56035" />
       </mesh>
       
       <mesh position={[2, 0.5, 5]} castShadow>
         <boxGeometry args={[1, 0.6, 1]} />
-        <meshStandardMaterial color="#a87d3d" />
+        <meshStandardMaterial color="#c89d5d" />
       </mesh>
       
-      {/* Safety items */}
+      {/* Safety items - Brightened */}
       <InteractiveObject
         position={[-8, 1, -12]}
         geometry={[0.6, 1.6, 0.6]}
-        color="#ff0000"
-        hoverColor="#ff3333"
+        color="#ff3333"
+        hoverColor="#ff5555"
         taskId="1"
         onInteract={onCompleteTask}
         label="Fire Extinguisher"
@@ -557,8 +562,8 @@ const WarehouseEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: str
       <InteractiveObject
         position={[14.9, 2, -5]}
         geometry={[0.1, 1.5, 2]}
-        color="#33cc33"
-        hoverColor="#55dd55"
+        color="#55dd55"
+        hoverColor="#77ff77"
         taskId="3"
         onInteract={onCompleteTask}
         label="Emergency Exit"
@@ -567,8 +572,8 @@ const WarehouseEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: str
       <InteractiveObject
         position={[14.9, 1, -5]}
         geometry={[0.1, 2, 1.5]}
-        color="#8b4513"
-        hoverColor="#a56035"
+        color="#a56035"
+        hoverColor="#c07946"
         taskId="4"
         onInteract={onCompleteTask}
         label="Exit Door"
@@ -577,18 +582,21 @@ const WarehouseEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: str
       <InteractiveObject
         position={[0, 0.2, -10]}
         geometry={[4, 0.05, 2]}
-        color="#ffcc00"
-        hoverColor="#ffdd33"
+        color="#ffdd33"
+        hoverColor="#ffee55"
         taskId="2"
         onInteract={onCompleteTask}
         label="Spill Hazard"
       />
       
-      {/* Lights */}
-      <ambientLight intensity={0.2} />
-      <pointLight position={[0, 7, 0]} intensity={0.8} castShadow />
-      <pointLight position={[-10, 7, -10]} intensity={0.5} castShadow />
-      <pointLight position={[10, 7, 10]} intensity={0.5} castShadow />
+      {/* Enhanced Lighting */}
+      <ambientLight intensity={0.5} /> {/* Increased from 0.2 */}
+      <pointLight position={[0, 7, 0]} intensity={1.2} color="#ffffff" castShadow /> {/* Increased from 0.8 */}
+      <pointLight position={[-10, 7, -10]} intensity={0.8} color="#fffaea" castShadow /> {/* Increased from 0.5 */}
+      <pointLight position={[10, 7, 10]} intensity={0.8} color="#eaffff" castShadow /> {/* Increased from 0.5 */}
+      {/* Additional light sources */}
+      <pointLight position={[0, 4, -5]} intensity={0.6} color="#fffaea" />
+      <pointLight position={[0, 4, 5]} intensity={0.6} color="#eaffff" />
     </>
   );
 };
@@ -647,7 +655,7 @@ const InteractiveObject = ({
   );
 };
 
-// Html component for labels
+// Html component for labels with fixed IDs to avoid selector issues
 const Html = ({ children, position }: { 
   children: React.ReactNode;
   position: [number, number, number]; 
@@ -661,20 +669,25 @@ const Html = ({ children, position }: {
     const x = (pos.x * 0.5 + 0.5) * window.innerWidth;
     const y = (-pos.y * 0.5 + 0.5) * window.innerHeight;
     
-    const label = document.querySelector(`#label-${position.join('-')}`);
+    // Use a sanitized ID that won't cause querySelector errors with periods
+    const sanitizedPos = `${Math.floor(position[0] * 100)}_${Math.floor(position[1] * 100)}_${Math.floor(position[2] * 100)}`;
+    const label = document.querySelector(`#label-${sanitizedPos}`);
     if (label) {
       (label as HTMLElement).style.transform = `translate(-50%, -100%) translate(${x}px,${y}px)`;
     }
   });
   
   useEffect(() => {
+    // Create sanitized ID that won't cause querySelector errors
+    const sanitizedPos = `${Math.floor(position[0] * 100)}_${Math.floor(position[1] * 100)}_${Math.floor(position[2] * 100)}`;
+    
     const element = document.createElement('div');
-    element.id = `label-${position.join('-')}`;
+    element.id = `label-${sanitizedPos}`;
     element.style.position = 'absolute';
     element.style.pointerEvents = 'none';
     document.body.appendChild(element);
     
-    const root = document.getElementById(`label-${position.join('-')}`);
+    const root = document.getElementById(`label-${sanitizedPos}`);
     if (root) {
       const div = document.createElement('div');
       root.appendChild(div);
@@ -689,7 +702,9 @@ const Html = ({ children, position }: {
     }
     
     return () => {
-      document.body.removeChild(element);
+      if (document.body.contains(element)) {
+        document.body.removeChild(element);
+      }
     };
   }, [children, position]);
   
