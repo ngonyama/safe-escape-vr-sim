@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useState } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { OrbitControls, useGLTF, Text } from '@react-three/drei';
@@ -113,6 +112,7 @@ const OfficeEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: string
         <meshStandardMaterial color="#ffffff" />
       </mesh>
       
+      {/* Interactive objects */}
       {/* Exit door */}
       <InteractiveObject
         position={[9.9, 1, -5]}
@@ -165,8 +165,8 @@ const OfficeEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: string
       {/* Enhanced Lighting */}
       {/* Doubled from 0.5 */}
       <ambientLight intensity={1.0} /> 
-      {/* Enhanced and added colors */}
-      <hemisphereLight intensity={0.8} skyColor="#ffffff" groundColor="#bbbbff" /> 
+      {/* Enhanced and added colors - FIXED PROPS */}
+      <hemisphereLight intensity={0.8} color="#ffffff" groundColor="#bbbbff" /> 
       {/* Doubled from 0.5 */}
       <directionalLight
         position={[10, 10, 10]}
