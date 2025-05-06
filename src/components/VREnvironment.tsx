@@ -8,6 +8,12 @@ import * as THREE from 'three';
 const OfficeEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: string) => void }) => {
   const { scene, camera } = useThree();
   const playerRef = useRef<THREE.Group>(new THREE.Group());
+  const [moveState, setMoveState] = useState({
+    forward: false,
+    backward: false,
+    left: false,
+    right: false,
+  });
   
   useEffect(() => {
     // Set initial position
@@ -19,41 +25,40 @@ const OfficeEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: string
     camera.position.set(0, 0, 0);
     camera.lookAt(0, 0, -1);
     
+    // Handle keyboard events
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'w' || e.key === 'ArrowUp') setMoveState(prev => ({ ...prev, forward: true }));
+      if (e.key === 's' || e.key === 'ArrowDown') setMoveState(prev => ({ ...prev, backward: true }));
+      if (e.key === 'a' || e.key === 'ArrowLeft') setMoveState(prev => ({ ...prev, left: true }));
+      if (e.key === 'd' || e.key === 'ArrowRight') setMoveState(prev => ({ ...prev, right: true }));
+    };
+    
+    const handleKeyUp = (e: KeyboardEvent) => {
+      if (e.key === 'w' || e.key === 'ArrowUp') setMoveState(prev => ({ ...prev, forward: false }));
+      if (e.key === 's' || e.key === 'ArrowDown') setMoveState(prev => ({ ...prev, backward: false }));
+      if (e.key === 'a' || e.key === 'ArrowLeft') setMoveState(prev => ({ ...prev, left: false }));
+      if (e.key === 'd' || e.key === 'ArrowRight') setMoveState(prev => ({ ...prev, right: false }));
+    };
+    
+    // Add event listeners outside the animation loop
+    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener('keyup', handleKeyUp);
+    
     return () => {
+      // Clean up event listeners and scene objects
+      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener('keyup', handleKeyUp);
       scene.remove(playerRef.current);
     };
   }, [scene, camera]);
   
-  // Simple keyboard movement system
-  useFrame(({ clock }) => {
-    const keyboard = {
-      forward: false,
-      backward: false,
-      left: false,
-      right: false,
-    };
-    
-    // Check keyboard input
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'w' || e.key === 'ArrowUp') keyboard.forward = true;
-      if (e.key === 's' || e.key === 'ArrowDown') keyboard.backward = true;
-      if (e.key === 'a' || e.key === 'ArrowLeft') keyboard.left = true;
-      if (e.key === 'd' || e.key === 'ArrowRight') keyboard.right = true;
-    });
-    
-    document.addEventListener('keyup', (e) => {
-      if (e.key === 'w' || e.key === 'ArrowUp') keyboard.forward = false;
-      if (e.key === 's' || e.key === 'ArrowDown') keyboard.backward = false;
-      if (e.key === 'a' || e.key === 'ArrowLeft') keyboard.left = false;
-      if (e.key === 'd' || e.key === 'ArrowRight') keyboard.right = false;
-    });
-    
-    // Move player
+  // Movement system
+  useFrame(() => {
     const speed = 0.05;
-    if (keyboard.forward) playerRef.current.translateZ(-speed);
-    if (keyboard.backward) playerRef.current.translateZ(speed);
-    if (keyboard.left) playerRef.current.rotateY(0.02);
-    if (keyboard.right) playerRef.current.rotateY(-0.02);
+    if (moveState.forward) playerRef.current.translateZ(-speed);
+    if (moveState.backward) playerRef.current.translateZ(speed);
+    if (moveState.left) playerRef.current.rotateY(0.02);
+    if (moveState.right) playerRef.current.rotateY(-0.02);
   });
   
   return (
@@ -260,14 +265,21 @@ interface VREnvironmentProps {
 
 const VREnvironment = ({ environmentType, scenarioType, onCompleteTask }: VREnvironmentProps) => {
   return (
-    <Canvas
-      shadows
-      camera={{ position: [0, 1.6, 5], fov: 70 }}
-      style={{ height: '100vh', width: '100vw' }}
-    >
-      {/* For now we're only supporting office environment */}
-      <OfficeEnvironment onCompleteTask={onCompleteTask} />
-    </Canvas>
+    <div className="relative h-full w-full">
+      <div className="absolute bottom-4 left-4 z-10 bg-black bg-opacity-60 p-2 rounded text-white text-sm">
+        <p>Controls: W/↑ (forward), S/↓ (backward), A/← (turn left), D/→ (turn right)</p>
+        <p>Click on objects to interact with them</p>
+      </div>
+      
+      <Canvas
+        shadows
+        camera={{ position: [0, 1.6, 5], fov: 70 }}
+        style={{ height: '100%', width: '100%' }}
+      >
+        {/* For now we're only supporting office environment */}
+        <OfficeEnvironment onCompleteTask={onCompleteTask} />
+      </Canvas>
+    </div>
   );
 };
 
