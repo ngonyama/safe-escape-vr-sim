@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useState } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { OrbitControls, useGLTF } from '@react-three/drei';
@@ -13,6 +12,13 @@ const OfficeEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: string
     backward: false,
     left: false,
     right: false,
+  });
+  
+  // Add mouse control for looking up/down
+  const [lookState, setLookState] = useState({
+    isLooking: false,
+    lookX: 0,
+    lookY: 0,
   });
   
   useEffect(() => {
@@ -40,17 +46,65 @@ const OfficeEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: string
       if (e.key === 'd' || e.key === 'ArrowRight') setMoveState(prev => ({ ...prev, right: false }));
     };
     
-    // Add event listeners outside the animation loop
+    // Mouse look control
+    const handleMouseDown = (e: MouseEvent) => {
+      setLookState(prev => ({
+        ...prev,
+        isLooking: true,
+        lookX: e.clientX,
+        lookY: e.clientY
+      }));
+    };
+    
+    const handleMouseMove = (e: MouseEvent) => {
+      if (lookState.isLooking) {
+        // Calculate deltas
+        const deltaX = e.clientX - lookState.lookX;
+        const deltaY = e.clientY - lookState.lookY;
+        
+        // Rotate player horizontally (left/right)
+        playerRef.current.rotateY(-deltaX * 0.005);
+        
+        // Tilt camera vertically (up/down) with limits to prevent flipping
+        const currentRotation = camera.rotation.x;
+        const newRotation = currentRotation - deltaY * 0.005;
+        // Limit vertical rotation to prevent flipping (approximately -85° to 85°)
+        const maxRotation = Math.PI * 0.47;
+        camera.rotation.x = Math.max(-maxRotation, Math.min(maxRotation, newRotation));
+        
+        // Update look position
+        setLookState(prev => ({
+          ...prev,
+          lookX: e.clientX,
+          lookY: e.clientY
+        }));
+      }
+    };
+    
+    const handleMouseUp = () => {
+      setLookState(prev => ({
+        ...prev,
+        isLooking: false
+      }));
+    };
+    
+    // Add event listeners
     document.addEventListener('keydown', handleKeyDown);
     document.addEventListener('keyup', handleKeyUp);
+    document.addEventListener('mousedown', handleMouseDown);
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
     
     return () => {
       // Clean up event listeners and scene objects
       document.removeEventListener('keydown', handleKeyDown);
       document.removeEventListener('keyup', handleKeyUp);
+      document.removeEventListener('mousedown', handleMouseDown);
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
       scene.remove(playerRef.current);
     };
-  }, [scene, camera]);
+  }, [scene, camera, lookState.isLooking, lookState.lookX, lookState.lookY]);
   
   // Movement system
   useFrame(() => {
@@ -268,6 +322,7 @@ const VREnvironment = ({ environmentType, scenarioType, onCompleteTask }: VREnvi
     <div className="relative h-full w-full">
       <div className="absolute bottom-4 left-4 z-10 bg-black bg-opacity-60 p-2 rounded text-white text-sm">
         <p>Controls: W/↑ (forward), S/↓ (backward), A/← (turn left), D/→ (turn right)</p>
+        <p>Mouse: Click and drag to look around</p>
         <p>Click on objects to interact with them</p>
       </div>
       
