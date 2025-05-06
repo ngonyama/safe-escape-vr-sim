@@ -46,14 +46,18 @@ const OfficeEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: string
       if (e.key === 'd' || e.key === 'ArrowRight') setMoveState(prev => ({ ...prev, right: false }));
     };
     
-    // Mouse look control
+    // Mouse look control - fixed version
     const handleMouseDown = (e: MouseEvent) => {
-      setLookState(prev => ({
-        ...prev,
-        isLooking: true,
-        lookX: e.clientX,
-        lookY: e.clientY
-      }));
+      // Only trigger mouse look when clicking on the canvas
+      const canvas = document.querySelector('canvas');
+      if (canvas && e.target === canvas) {
+        setLookState(prev => ({
+          ...prev,
+          isLooking: true,
+          lookX: e.clientX,
+          lookY: e.clientY
+        }));
+      }
     };
     
     const handleMouseMove = (e: MouseEvent) => {
@@ -88,12 +92,18 @@ const OfficeEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: string
       }));
     };
     
+    // Also prevent context menu to improve user experience
+    const preventContextMenu = (e: MouseEvent) => {
+      e.preventDefault();
+    };
+    
     // Add event listeners
     document.addEventListener('keydown', handleKeyDown);
     document.addEventListener('keyup', handleKeyUp);
     document.addEventListener('mousedown', handleMouseDown);
     document.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('mouseup', handleMouseUp);
+    document.addEventListener('contextmenu', preventContextMenu);
     
     return () => {
       // Clean up event listeners and scene objects
@@ -102,6 +112,7 @@ const OfficeEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: string
       document.removeEventListener('mousedown', handleMouseDown);
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
+      document.removeEventListener('contextmenu', preventContextMenu);
       scene.remove(playerRef.current);
     };
   }, [scene, camera, lookState.isLooking, lookState.lookX, lookState.lookY]);
@@ -322,14 +333,14 @@ const VREnvironment = ({ environmentType, scenarioType, onCompleteTask }: VREnvi
     <div className="relative h-full w-full">
       <div className="absolute bottom-4 left-4 z-10 bg-black bg-opacity-60 p-2 rounded text-white text-sm">
         <p>Controls: W/↑ (forward), S/↓ (backward), A/← (turn left), D/→ (turn right)</p>
-        <p>Mouse: Click and drag to look around</p>
+        <p>Mouse: <strong>Click on the scene</strong> and drag to look around</p>
         <p>Click on objects to interact with them</p>
       </div>
       
       <Canvas
         shadows
         camera={{ position: [0, 1.6, 5], fov: 70 }}
-        style={{ height: '100%', width: '100%' }}
+        style={{ height: '100%', width: '100%', cursor: 'pointer' }}
       >
         {/* For now we're only supporting office environment */}
         <OfficeEnvironment onCompleteTask={onCompleteTask} />
