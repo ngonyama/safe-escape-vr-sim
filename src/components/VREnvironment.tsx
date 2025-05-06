@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef, useState } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { OrbitControls, useGLTF, Text } from '@react-three/drei';
@@ -162,11 +163,14 @@ const OfficeEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: string
       </mesh>
       
       {/* Enhanced Lighting */}
-      <ambientLight intensity={1.0} /> {/* Doubled from 0.5 */}
-      <hemisphereLight intensity={0.8} skyColor="#ffffff" groundColor="#bbbbff" /> {/* Enhanced and added colors */}
+      {/* Doubled from 0.5 */}
+      <ambientLight intensity={1.0} /> 
+      {/* Enhanced and added colors */}
+      <hemisphereLight intensity={0.8} skyColor="#ffffff" groundColor="#bbbbff" /> 
+      {/* Doubled from 0.5 */}
       <directionalLight
         position={[10, 10, 10]}
-        intensity={1.0} {/* Doubled from 0.5 */}
+        intensity={1.0}
         castShadow
         shadow-mapSize-width={1024}
         shadow-mapSize-height={1024}
@@ -355,10 +359,14 @@ const FactoryEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: strin
       />
       
       {/* Enhanced Lighting */}
-      <ambientLight intensity={0.6} /> {/* Doubled from 0.3 */}
-      <pointLight position={[0, 5, 0]} intensity={1.2} color="#ffffff" castShadow /> {/* Increased from 0.8 */}
-      <pointLight position={[-10, 5, -10]} intensity={0.8} color="#fffaea" castShadow /> {/* Increased from 0.5 */}
-      <pointLight position={[10, 5, 10]} intensity={0.8} color="#eaffff" castShadow /> {/* Increased from 0.5 */}
+      {/* Doubled from 0.3 */}
+      <ambientLight intensity={0.6} /> 
+      {/* Increased from 0.8 */}
+      <pointLight position={[0, 5, 0]} intensity={1.2} color="#ffffff" castShadow /> 
+      {/* Increased from 0.5 */}
+      <pointLight position={[-10, 5, -10]} intensity={0.8} color="#fffaea" castShadow /> 
+      {/* Increased from 0.5 */}
+      <pointLight position={[10, 5, 10]} intensity={0.8} color="#eaffff" castShadow /> 
       {/* Additional light sources */}
       <pointLight position={[0, 3, -10]} intensity={0.6} color="#fffdea" />
       <pointLight position={[-8, 3, 0]} intensity={0.5} color="#eaffff" />
@@ -590,10 +598,14 @@ const WarehouseEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: str
       />
       
       {/* Enhanced Lighting */}
-      <ambientLight intensity={0.5} /> {/* Increased from 0.2 */}
-      <pointLight position={[0, 7, 0]} intensity={1.2} color="#ffffff" castShadow /> {/* Increased from 0.8 */}
-      <pointLight position={[-10, 7, -10]} intensity={0.8} color="#fffaea" castShadow /> {/* Increased from 0.5 */}
-      <pointLight position={[10, 7, 10]} intensity={0.8} color="#eaffff" castShadow /> {/* Increased from 0.5 */}
+      {/* Increased from 0.2 */}
+      <ambientLight intensity={0.5} /> 
+      {/* Increased from 0.8 */}
+      <pointLight position={[0, 7, 0]} intensity={1.2} color="#ffffff" castShadow /> 
+      {/* Increased from 0.5 */}
+      <pointLight position={[-10, 7, -10]} intensity={0.8} color="#fffaea" castShadow /> 
+      {/* Increased from 0.5 */}
+      <pointLight position={[10, 7, 10]} intensity={0.8} color="#eaffff" castShadow /> 
       {/* Additional light sources */}
       <pointLight position={[0, 4, -5]} intensity={0.6} color="#fffaea" />
       <pointLight position={[0, 4, 5]} intensity={0.6} color="#eaffff" />
