@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { OrbitControls, useGLTF, Text, Html as DreiHtml, useTexture, Sky } from '@react-three/drei';
 import * as THREE from 'three';
-import { Flame, FireExtinguisher } from 'lucide-react';
+import { Flame, FireExtinguisher, FirstAidKit } from 'lucide-react';
 
 // Scene components for different environments
 const OfficeEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: string) => void }) => {
@@ -200,6 +200,43 @@ const OfficeEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: string
             <meshBasicMaterial color="white" />
           </mesh>
         </group>
+      </group>
+    );
+  };
+  
+  // New function to create a first aid kit
+  const createFirstAidKit = (position: [number, number, number]) => {
+    return (
+      <group position={position}>
+        {/* Main box */}
+        <mesh castShadow>
+          <boxGeometry args={[0.6, 0.4, 0.2]} />
+          <meshStandardMaterial color="#ea384c" />
+        </mesh>
+        
+        {/* White cross on front */}
+        <mesh position={[0, 0, 0.101]}>
+          <planeGeometry args={[0.4, 0.3]} />
+          <meshBasicMaterial color="#ffffff" />
+        </mesh>
+        
+        {/* Red cross */}
+        <group position={[0, 0, 0.102]}>
+          <mesh>
+            <boxGeometry args={[0.08, 0.25, 0.01]} />
+            <meshBasicMaterial color="#ea384c" />
+          </mesh>
+          <mesh>
+            <boxGeometry args={[0.25, 0.08, 0.01]} />
+            <meshBasicMaterial color="#ea384c" />
+          </mesh>
+        </group>
+        
+        {/* Handle on top */}
+        <mesh position={[0, 0.25, 0]}>
+          <boxGeometry args={[0.3, 0.1, 0.1]} />
+          <meshStandardMaterial color="#dddddd" />
+        </mesh>
       </group>
     );
   };
@@ -419,6 +456,9 @@ const OfficeEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: string
       {/* Assembly point sign outside the building */}
       {createAssemblyPointSign([15, 0, -8])}
       
+      {/* First aid kit near the assembly point */}
+      {createFirstAidKit([15.8, 0.3, -6.5])}
+      
       {/* Workers gathered at the assembly point */}
       {createOfficeWorker([14, 0, -7], Math.PI / 4)}
       {createOfficeWorker([13.5, 0, -8], -Math.PI / 6)}
@@ -630,6 +670,43 @@ const FactoryEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: strin
     playerRef.current.position.y = 0.7;
   });
   
+  // Create a first aid kit at the assembly point in factory environment
+  const createFirstAidKit = (position: [number, number, number]) => {
+    return (
+      <group position={position}>
+        {/* Main box */}
+        <mesh castShadow>
+          <boxGeometry args={[0.6, 0.4, 0.2]} />
+          <meshStandardMaterial color="#ea384c" />
+        </mesh>
+        
+        {/* White cross on front */}
+        <mesh position={[0, 0, 0.101]}>
+          <planeGeometry args={[0.4, 0.3]} />
+          <meshBasicMaterial color="#ffffff" />
+        </mesh>
+        
+        {/* Red cross */}
+        <group position={[0, 0, 0.102]}>
+          <mesh>
+            <boxGeometry args={[0.08, 0.25, 0.01]} />
+            <meshBasicMaterial color="#ea384c" />
+          </mesh>
+          <mesh>
+            <boxGeometry args={[0.25, 0.08, 0.01]} />
+            <meshBasicMaterial color="#ea384c" />
+          </mesh>
+        </group>
+        
+        {/* Handle on top */}
+        <mesh position={[0, 0.25, 0]}>
+          <boxGeometry args={[0.3, 0.1, 0.1]} />
+          <meshStandardMaterial color="#dddddd" />
+        </mesh>
+      </group>
+    );
+  };
+  
   return (
     <>
       {/* Add blue sky to factory environment */}
@@ -763,6 +840,9 @@ const FactoryEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: strin
         />
       </group>
       
+      {/* First aid kit near exit */}
+      {createFirstAidKit([16.5, 0.3, -5])}
+      
       {/* Enhanced Lighting */}
       {/* Doubled from 0.3 */}
       <ambientLight intensity={0.6} /> 
@@ -773,7 +853,7 @@ const FactoryEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: strin
       {/* Increased from 0.5 */}
       <pointLight position={[10, 5, 10]} intensity={0.8} color="#eaffff" castShadow /> 
       {/* Additional light sources */}
-      <pointLight position={[0, 3, -10]} intensity={0.6} color="#fffdea" />
+      <pointLight position={[0, 3, -10]} intensity={0.6} color="#fffaea" />
       <pointLight position={[-8, 3, 0]} intensity={0.5} color="#eaffff" />
     </>
   );
@@ -851,6 +931,43 @@ const WarehouseEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: str
     
     playerRef.current.position.y = 0.7;
   });
+  
+  // Create a first aid kit at the assembly point in warehouse environment
+  const createFirstAidKit = (position: [number, number, number]) => {
+    return (
+      <group position={position}>
+        {/* Main box */}
+        <mesh castShadow>
+          <boxGeometry args={[0.6, 0.4, 0.2]} />
+          <meshStandardMaterial color="#ea384c" />
+        </mesh>
+        
+        {/* White cross on front */}
+        <mesh position={[0, 0, 0.101]}>
+          <planeGeometry args={[0.4, 0.3]} />
+          <meshBasicMaterial color="#ffffff" />
+        </mesh>
+        
+        {/* Red cross */}
+        <group position={[0, 0, 0.102]}>
+          <mesh>
+            <boxGeometry args={[0.08, 0.25, 0.01]} />
+            <meshBasicMaterial color="#ea384c" />
+          </mesh>
+          <mesh>
+            <boxGeometry args={[0.25, 0.08, 0.01]} />
+            <meshBasicMaterial color="#ea384c" />
+          </mesh>
+        </group>
+        
+        {/* Handle on top */}
+        <mesh position={[0, 0.25, 0]}>
+          <boxGeometry args={[0.3, 0.1, 0.1]} />
+          <meshStandardMaterial color="#dddddd" />
+        </mesh>
+      </group>
+    );
+  };
   
   // Create shelving unit - Brightened colors
   const createShelf = (posX: number, posZ: number, rotation: number = 0) => {
@@ -1022,6 +1139,9 @@ const WarehouseEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: str
         />
       </group>
       
+      {/* First aid kit near exit */}
+      {createFirstAidKit([16.5, 0.3, -5])}
+      
       <InteractiveObject
         position={[0, 0.2, -10]}
         geometry={[4, 0.05, 2]}
@@ -1114,96 +1234,4 @@ const Html = ({ children, position }: {
   children: React.ReactNode;
   position: [number, number, number]; 
 }) => {
-  const { camera } = useThree();
-  const [pos] = useState(() => new THREE.Vector3());
-  
-  useFrame(() => {
-    pos.set(position[0], position[1], position[2]);
-    pos.project(camera);
-    const x = (pos.x * 0.5 + 0.5) * window.innerWidth;
-    const y = (-pos.y * 0.5 + 0.5) * window.innerHeight;
-    
-    // Use a sanitized ID that won't cause querySelector errors with periods
-    const sanitizedPos = `${Math.floor(position[0] * 100)}_${Math.floor(position[1] * 100)}_${Math.floor(position[2] * 100)}`;
-    const label = document.querySelector(`#label-${sanitizedPos}`);
-    if (label) {
-      (label as HTMLElement).style.transform = `translate(-50%, -100%) translate(${x}px,${y}px)`;
-    }
-  });
-  
-  useEffect(() => {
-    // Create sanitized ID that won't cause querySelector errors
-    const sanitizedPos = `${Math.floor(position[0] * 100)}_${Math.floor(position[1] * 100)}_${Math.floor(position[2] * 100)}`;
-    
-    const element = document.createElement('div');
-    element.id = `label-${sanitizedPos}`;
-    element.style.position = 'absolute';
-    element.style.pointerEvents = 'none';
-    document.body.appendChild(element);
-    
-    const root = document.getElementById(`label-${sanitizedPos}`);
-    if (root) {
-      const div = document.createElement('div');
-      root.appendChild(div);
-      div.innerHTML = '';
-      
-      // Insert children
-      if (typeof children === 'string') {
-        div.textContent = children;
-      } else if (React.isValidElement(children)) {
-        div.innerHTML = (children.props as any).children;
-      }
-    }
-    
-    return () => {
-      if (document.body.contains(element)) {
-        document.body.removeChild(element);
-      }
-    };
-  }, [children, position]);
-  
-  return null;
-};
-
-// Main VR environment component
-interface VREnvironmentProps {
-  environmentType: string;
-  scenarioType: string;
-  onCompleteTask: (taskId: string) => void;
-}
-
-const VREnvironment = ({ environmentType, scenarioType, onCompleteTask }: VREnvironmentProps) => {
-  // Choose environment based on scenario type
-  const renderEnvironment = () => {
-    switch (scenarioType) {
-      case 'fire':
-        return <OfficeEnvironment onCompleteTask={onCompleteTask} />;
-      case 'evacuation':
-        return <FactoryEnvironment onCompleteTask={onCompleteTask} />;
-      case 'hazards':
-        return <WarehouseEnvironment onCompleteTask={onCompleteTask} />;
-      default:
-        return <OfficeEnvironment onCompleteTask={onCompleteTask} />;
-    }
-  };
-
-  return (
-    <div className="relative h-full w-full">
-      <div className="absolute bottom-4 left-4 z-10 bg-black bg-opacity-60 p-2 rounded text-white text-sm">
-        <p>Movement: W/↑ (forward), S/↓ (backward), A/← (turn left), D/→ (turn right)</p>
-        <p>Look: Q (look up), E (look down)</p>
-        <p>Click on objects to interact with them</p>
-      </div>
-      
-      <Canvas
-        shadows
-        camera={{ position: [0, 0.7, 5], fov: 70 }} 
-        style={{ height: '100%', width: '100%' }}
-      >
-        {renderEnvironment()}
-      </Canvas>
-    </div>
-  );
-};
-
-export default VREnvironment;
+ 
