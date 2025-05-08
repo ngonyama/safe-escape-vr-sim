@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef, useState } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { OrbitControls, useGLTF, Text, Html as DreiHtml, useTexture, Sky } from '@react-three/drei';
@@ -1365,14 +1366,16 @@ const InteractiveObject = ({
       <meshStandardMaterial 
         color={interacted ? "#33cc33" : hovered ? hoverColor : color} 
         transparent={transparent}
-        opacity={transparent ? 0.0 : 1.0}
+        opacity={transparent ? 0.2 : 1.0}
       />
       {hovered && (
-        <Html position={[0, geometry[1] / 2 + 0.3, 0]}>
-          <div className="bg-black bg-opacity-70 text-white px-2 py-1 rounded text-sm">
-            {label}
-          </div>
-        </Html>
+        <group position={[0, geometry[1] / 2 + 0.3, 0]}>
+          <DreiHtml center>
+            <div className="bg-black bg-opacity-70 text-white px-2 py-1 rounded text-sm">
+              {label}
+            </div>
+          </DreiHtml>
+        </group>
       )}
     </mesh>
   );
