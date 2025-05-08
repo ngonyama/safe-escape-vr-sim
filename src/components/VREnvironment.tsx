@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { OrbitControls, useGLTF, Text, Html as DreiHtml, useTexture, Sky } from '@react-three/drei';
 import * as THREE from 'three';
-import { Flame, FireExtinguisher } from 'lucide-react';
+import { Flame, FireExtinguisher, EmergencyExit } from 'lucide-react';
 
 // Scene components for different environments
 const OfficeEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: string) => void }) => {
@@ -255,6 +255,53 @@ const OfficeEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: string
         label="Exit Door"
       />
       
+      {/* Emergency Exit Sign above the door */}
+      <group position={[9.9, 3, -5]}>
+        {/* Sign background */}
+        <mesh position={[0, 0, 0.05]} castShadow>
+          <boxGeometry args={[1.8, 0.6, 0.05]} />
+          <meshStandardMaterial color="#33cc33" />
+        </mesh>
+        
+        {/* White border */}
+        <mesh position={[0, 0, 0.08]}>
+          <boxGeometry args={[1.7, 0.5, 0.01]} />
+          <meshStandardMaterial color="#ffffff" />
+        </mesh>
+        
+        {/* Text and symbol */}
+        <Text 
+          position={[0, 0, 0.1]}
+          fontSize={0.2}
+          color="white"
+          anchorX="center"
+          anchorY="middle"
+        >
+          EMERGENCY EXIT
+        </Text>
+        
+        {/* Running figure with arrow */}
+        <mesh position={[-0.6, 0, 0.1]}>
+          <planeGeometry args={[0.3, 0.3]} />
+          <meshBasicMaterial color="#33cc33" />
+        </mesh>
+        
+        <mesh position={[-0.6, 0, 0.11]}>
+          <planeGeometry args={[0.25, 0.25]} />
+          <meshBasicMaterial>
+            <EmergencyExitIcon />
+          </meshBasicMaterial>
+        </mesh>
+        
+        {/* Add light to make the sign glow */}
+        <pointLight
+          position={[0, 0, 0.3]}
+          intensity={0.5}
+          distance={1}
+          color="#33ff33"
+        />
+      </group>
+      
       {/* Fire extinguisher - Replace red block with a proper fire extinguisher */}
       <group position={[5, 0.7, 9.7]} castShadow>
         {/* Extinguisher body */}
@@ -428,6 +475,19 @@ const OfficeEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: string
       <pointLight position={[-5, 5, 0]} intensity={0.8} color="#fffaea" />
       <pointLight position={[5, 3, -5]} intensity={0.8} color="#eaffff" />
     </>
+  );
+};
+
+// Custom component for the emergency exit icon
+const EmergencyExitIcon = () => {
+  const texture = useTexture('/lovable-uploads/emergency-exit-icon.png');
+  return (
+    <meshBasicMaterial 
+      map={texture} 
+      transparent={true}
+      opacity={1}
+      color="#ffffff"
+    />
   );
 };
 
