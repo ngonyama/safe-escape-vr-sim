@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useState } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { OrbitControls, useGLTF, Text, Html as DreiHtml, useTexture } from '@react-three/drei';
@@ -97,40 +96,48 @@ const OfficeEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: string
     }
   });
 
-  // Create office workers
+  // Create office workers - Updated function with more vibrant colors
   const createOfficeWorker = (position: [number, number, number], rotation: number = 0) => {
+    // More vibrant and visible clothing colors
+    const clothingColors = ["#1e3a8a", "#5a189a", "#a4133c", "#004e89", "#386641", "#7b2cbf"];
+    const randomClothingColor = clothingColors[Math.floor(Math.random() * clothingColors.length)];
+    
+    // Randomize skin tones slightly
+    const skinTones = ["#ffdbac", "#f1c27d", "#e0ac69", "#c68642", "#8d5524"];
+    const skinTone = skinTones[Math.floor(Math.random() * skinTones.length)];
+    
     return (
       <group position={position} rotation={[0, rotation, 0]}>
         {/* Body - torso */}
-        <mesh position={[0, 0.5, 0]} castShadow>
+        <mesh position={[0, 0.7, 0]} castShadow>
           <boxGeometry args={[0.4, 0.6, 0.2]} />
-          <meshStandardMaterial color={["#3a506b", "#2b2d42", "#1d3557"][Math.floor(Math.random() * 3)]} />
+          <meshStandardMaterial color={randomClothingColor} />
         </mesh>
         
         {/* Head */}
-        <mesh position={[0, 1.0, 0]} castShadow>
+        <mesh position={[0, 1.2, 0]} castShadow>
           <sphereGeometry args={[0.15, 16, 16]} />
-          <meshStandardMaterial color="#e5b695" />
+          <meshStandardMaterial color={skinTone} />
         </mesh>
         
         {/* Arms */}
-        <mesh position={[0.25, 0.5, 0]} rotation={[0, 0, -0.5]} castShadow>
+        <mesh position={[0.25, 0.7, 0]} rotation={[0, 0, -0.5]} castShadow>
           <boxGeometry args={[0.1, 0.4, 0.1]} />
-          <meshStandardMaterial color={["#3a506b", "#2b2d42", "#1d3557"][Math.floor(Math.random() * 3)]} />
+          <meshStandardMaterial color={randomClothingColor} />
         </mesh>
         
-        <mesh position={[-0.25, 0.5, 0]} rotation={[0, 0, 0.5]} castShadow>
+        <mesh position={[-0.25, 0.7, 0]} rotation={[0, 0, 0.5]} castShadow>
           <boxGeometry args={[0.1, 0.4, 0.1]} />
-          <meshStandardMaterial color={["#3a506b", "#2b2d42", "#1d3557"][Math.floor(Math.random() * 3)]} />
+          <meshStandardMaterial color={randomClothingColor} />
         </mesh>
         
         {/* Legs */}
-        <mesh position={[0.1, 0.1, 0]} castShadow>
+        <mesh position={[0.1, 0.25, 0]} castShadow>
           <boxGeometry args={[0.13, 0.4, 0.1]} />
           <meshStandardMaterial color="#1a1a2e" />
         </mesh>
         
-        <mesh position={[-0.1, 0.1, 0]} castShadow>
+        <mesh position={[-0.1, 0.25, 0]} castShadow>
           <boxGeometry args={[0.13, 0.4, 0.1]} />
           <meshStandardMaterial color="#1a1a2e" />
         </mesh>
@@ -209,8 +216,8 @@ const OfficeEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: string
         <InteractiveObject
           position={[0, 0.5, 0]}
           geometry={[0.4, 1.4, 0.4]}
-          color="transparent"
-          hoverColor="transparent"
+          color="rgba(0,0,0,0)"
+          hoverColor="rgba(255,255,255,0.2)"
           taskId="1"
           onInteract={onCompleteTask}
           label="Fire Extinguisher"
@@ -237,123 +244,129 @@ const OfficeEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: string
       
       {/* Add multiple desks with computers and office workers */}
       {/* Desk 1 (main desk) */}
-      <mesh position={[0, 0.1, 2]} castShadow>
-        <boxGeometry args={[1.2, 0.2, 1.2]} />
+      <mesh position={[0, 0.4, 2]} castShadow>
+        <boxGeometry args={[1.2, 0.1, 1.2]} />
         <meshStandardMaterial color="#a56035" />
       </mesh>
 
       {/* Computer on main desk */}
-      <mesh position={[0, 0.3, 2]} castShadow>
+      <mesh position={[0, 0.6, 2]} castShadow>
         <boxGeometry args={[0.5, 0.3, 0.05]} /> {/* Monitor */}
         <meshStandardMaterial color="#2b2b2b" />
       </mesh>
-      <mesh position={[0, 0.2, 2.1]} castShadow>
+      <mesh position={[0, 0.5, 2.1]} castShadow>
         <boxGeometry args={[0.3, 0.1, 0.2]} /> {/* Computer base */}
         <meshStandardMaterial color="#1a1a1a" />
       </mesh>
       
-      {/* Person sitting at main desk */}
-      {createOfficeWorker([0, 0.2, 2.4], Math.PI)}
+      {/* Person sitting at main desk - Fixed position */}
+      {createOfficeWorker([0, 0.4, 2.6], Math.PI)}
 
       {/* Second desk to the left */}
-      <mesh position={[-2, 0.1, 2]} castShadow>
-        <boxGeometry args={[1.2, 0.2, 1.2]} />
+      <mesh position={[-2, 0.4, 2]} castShadow>
+        <boxGeometry args={[1.2, 0.1, 1.2]} />
         <meshStandardMaterial color="#a56035" />
       </mesh>
 
       {/* Computer on second desk */}
-      <mesh position={[-2, 0.3, 2]} castShadow>
+      <mesh position={[-2, 0.6, 2]} castShadow>
         <boxGeometry args={[0.5, 0.3, 0.05]} /> {/* Monitor */}
         <meshStandardMaterial color="#2b2b2b" />
       </mesh>
-      <mesh position={[-2, 0.2, 2.1]} castShadow>
+      <mesh position={[-2, 0.5, 2.1]} castShadow>
         <boxGeometry args={[0.3, 0.1, 0.2]} /> {/* Computer base */}
         <meshStandardMaterial color="#1a1a1a" />
       </mesh>
       
-      {/* Person sitting at second desk */}
-      {createOfficeWorker([-2, 0.2, 2.4], Math.PI)}
+      {/* Person sitting at second desk - Fixed position */}
+      {createOfficeWorker([-2, 0.4, 2.6], Math.PI)}
 
       {/* Third desk to the right */}
-      <mesh position={[2, 0.1, 2]} castShadow>
-        <boxGeometry args={[1.2, 0.2, 1.2]} />
+      <mesh position={[2, 0.4, 2]} castShadow>
+        <boxGeometry args={[1.2, 0.1, 1.2]} />
         <meshStandardMaterial color="#a56035" />
       </mesh>
 
       {/* Computer on third desk */}
-      <mesh position={[2, 0.3, 2]} castShadow>
+      <mesh position={[2, 0.6, 2]} castShadow>
         <boxGeometry args={[0.5, 0.3, 0.05]} /> {/* Monitor */}
         <meshStandardMaterial color="#2b2b2b" />
       </mesh>
-      <mesh position={[2, 0.2, 2.1]} castShadow>
+      <mesh position={[2, 0.5, 2.1]} castShadow>
         <boxGeometry args={[0.3, 0.1, 0.2]} /> {/* Computer base */}
         <meshStandardMaterial color="#1a1a1a" />
       </mesh>
       
-      {/* Person sitting at third desk */}
-      {createOfficeWorker([2, 0.2, 2.4], Math.PI)}
+      {/* Person sitting at third desk - Fixed position */}
+      {createOfficeWorker([2, 0.4, 2.6], Math.PI)}
       
       {/* Desk row in the back */}
-      <mesh position={[-3, 0.1, 4]} castShadow>
-        <boxGeometry args={[1.2, 0.2, 1.2]} />
+      <mesh position={[-3, 0.4, 4]} castShadow>
+        <boxGeometry args={[1.2, 0.1, 1.2]} />
         <meshStandardMaterial color="#a56035" />
       </mesh>
 
       {/* Computer on back desk */}
-      <mesh position={[-3, 0.3, 4]} castShadow>
+      <mesh position={[-3, 0.6, 4]} castShadow>
         <boxGeometry args={[0.5, 0.3, 0.05]} />
         <meshStandardMaterial color="#2b2b2b" />
       </mesh>
       
-      {/* Person at back desk */}
-      {createOfficeWorker([-3, 0.2, 4.4], Math.PI)}
+      {/* Person at back desk - Fixed position */}
+      {createOfficeWorker([-3, 0.4, 4.6], Math.PI)}
       
       {/* Another back desk */}
-      <mesh position={[0, 0.1, 4]} castShadow>
-        <boxGeometry args={[1.2, 0.2, 1.2]} />
+      <mesh position={[0, 0.4, 4]} castShadow>
+        <boxGeometry args={[1.2, 0.1, 1.2]} />
         <meshStandardMaterial color="#a56035" />
       </mesh>
 
       {/* Computer on another back desk */}
-      <mesh position={[0, 0.3, 4]} castShadow>
+      <mesh position={[0, 0.6, 4]} castShadow>
         <boxGeometry args={[0.5, 0.3, 0.05]} />
         <meshStandardMaterial color="#2b2b2b" />
       </mesh>
       
-      {/* Person at another back desk */}
-      {createOfficeWorker([0, 0.2, 4.4], Math.PI)}
+      {/* Person at another back desk - Fixed position */}
+      {createOfficeWorker([0, 0.4, 4.6], Math.PI)}
       
       {/* One more back desk */}
-      <mesh position={[3, 0.1, 4]} castShadow>
-        <boxGeometry args={[1.2, 0.2, 1.2]} />
+      <mesh position={[3, 0.4, 4]} castShadow>
+        <boxGeometry args={[1.2, 0.1, 1.2]} />
         <meshStandardMaterial color="#a56035" />
       </mesh>
 
       {/* Computer on one more back desk */}
-      <mesh position={[3, 0.3, 4]} castShadow>
+      <mesh position={[3, 0.6, 4]} castShadow>
         <boxGeometry args={[0.5, 0.3, 0.05]} />
         <meshStandardMaterial color="#2b2b2b" />
       </mesh>
       
-      {/* Person at one more back desk */}
-      {createOfficeWorker([3, 0.2, 4.4], Math.PI)}
+      {/* Person at one more back desk - Fixed position */}
+      {createOfficeWorker([3, 0.4, 4.6], Math.PI)}
+
+      {/* Add more workers in the room - Additional standing workers */}
+      {createOfficeWorker([-1, 0, -2], Math.PI / 4)}
+      {createOfficeWorker([1.5, 0, -1], -Math.PI / 6)}
+      {createOfficeWorker([-3, 0, 0], Math.PI / 2)}
+      {createOfficeWorker([4, 0, 3], -Math.PI / 3)}
 
       {/* Animated Fire Image in place of the flame */}
       <AnimatedFireImage flameRef={flameRef} position={[0, 0.55, 2]} />
       
       {/* Enhanced Lighting */}
-      <ambientLight intensity={1.0} /> 
-      <hemisphereLight intensity={0.8} color="#ffffff" groundColor="#bbbbff" /> 
+      <ambientLight intensity={1.2} /> 
+      <hemisphereLight intensity={1.0} color="#ffffff" groundColor="#bbbbff" /> 
       <directionalLight
         position={[10, 10, 10]}
-        intensity={1.0}
+        intensity={1.2}
         castShadow
         shadow-mapSize-width={1024}
         shadow-mapSize-height={1024}
       />
       {/* Additional light sources */}
-      <pointLight position={[-5, 5, 0]} intensity={0.6} color="#fffaea" />
-      <pointLight position={[5, 3, -5]} intensity={0.6} color="#eaffff" />
+      <pointLight position={[-5, 5, 0]} intensity={0.8} color="#fffaea" />
+      <pointLight position={[5, 3, -5]} intensity={0.8} color="#eaffff" />
     </>
   );
 };
