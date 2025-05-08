@@ -186,6 +186,9 @@ const OfficeEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: string
         label="Exit Door"
       />
       
+      {/* Exit Sign - New realistic implementation */}
+      <ExitSign position={[9.9, 2.65, -5]} />
+      
       {/* Fire extinguisher - Replace red block with a proper fire extinguisher */}
       <group position={[5, 0.7, 9.7]} castShadow>
         {/* Extinguisher body */}
@@ -368,6 +371,86 @@ const OfficeEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: string
       <pointLight position={[-5, 5, 0]} intensity={0.8} color="#fffaea" />
       <pointLight position={[5, 3, -5]} intensity={0.8} color="#eaffff" />
     </>
+  );
+};
+
+// New component for realistic exit sign
+const ExitSign = ({ position }: { position: [number, number, number] }) => {
+  // Add light flicker effect to simulate realistic fluorescent light
+  const signMaterialRef = useRef<THREE.MeshStandardMaterial>(null);
+  
+  useFrame(({ clock }) => {
+    if (signMaterialRef.current) {
+      // Create subtle flicker effect for the exit sign
+      const time = clock.getElapsedTime();
+      const flickerSpeed = 8;
+      const flickerAmount = 0.1;
+      const flicker = 1 + Math.sin(time * flickerSpeed) * flickerAmount * 0.1;
+      
+      signMaterialRef.current.emissiveIntensity = 1 * flicker;
+    }
+  });
+  
+  return (
+    <group position={position} rotation={[0, Math.PI/2, 0]}>
+      {/* Exit sign housing - black box with slight metallic look */}
+      <mesh position={[0, 0, 0]} castShadow>
+        <boxGeometry args={[0.7, 0.35, 0.1]} />
+        <meshStandardMaterial color="#222222" metalness={0.7} roughness={0.3} />
+      </mesh>
+      
+      {/* Exit sign face - illuminated front */}
+      <mesh position={[0, 0, 0.05]} castShadow>
+        <boxGeometry args={[0.65, 0.3, 0.01]} />
+        <meshStandardMaterial 
+          ref={signMaterialRef}
+          color="#ea384c" 
+          emissive="#ff0000"
+          emissiveIntensity={1}
+          toneMapped={false}
+        />
+      </mesh>
+      
+      {/* EXIT text */}
+      <Text
+        position={[0, 0, 0.06]}
+        rotation={[0, 0, 0]}
+        fontSize={0.15}
+        color="#ffffff"
+        font="https://fonts.gstatic.com/s/roboto/v30/KFOmCnqEu92Fr1Me5Q.ttf"
+        textAlign="center"
+        anchorX="center"
+        anchorY="middle"
+      >
+        EXIT
+      </Text>
+      
+      {/* Light glow effect */}
+      <pointLight 
+        position={[0, 0, 0.2]} 
+        color="#ff4444" 
+        intensity={0.4} 
+        distance={1.5}
+        decay={2}
+      />
+      
+      {/* Subtle green down arrow below text */}
+      <mesh position={[0, -0.1, 0.06]} castShadow>
+        <planeGeometry args={[0.15, 0.08]} />
+        <meshBasicMaterial color="#33ff33" />
+      </mesh>
+      
+      {/* Mounting brackets */}
+      <mesh position={[-0.32, 0, -0.05]} castShadow>
+        <boxGeometry args={[0.03, 0.2, 0.05]} />
+        <meshStandardMaterial color="#333333" metalness={0.6} roughness={0.3} />
+      </mesh>
+      
+      <mesh position={[0.32, 0, -0.05]} castShadow>
+        <boxGeometry args={[0.03, 0.2, 0.05]} />
+        <meshStandardMaterial color="#333333" metalness={0.6} roughness={0.3} />
+      </mesh>
+    </group>
   );
 };
 
