@@ -137,15 +137,10 @@ const OfficeEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: string
         label="Exit Door"
       />
       
-      {/* Fire extinguisher - as interactive 3D object instead of image */}
-      <InteractiveObject
-        position={[5, 1, 7.5]}
-        geometry={[0.5, 1.2, 0.5]}
-        color="#ff3333"
-        hoverColor="#ff5555"
-        taskId="1"
-        onInteract={onCompleteTask}
-        label="Fire Extinguisher"
+      {/* Realistic fire extinguisher image */}
+      <FireExtinguisherRealistic 
+        position={[9.7, 1.5, 7.5]} 
+        onInteract={() => onCompleteTask('1')}
       />
 
       {/* Evacuation sign */}
@@ -190,14 +185,15 @@ const OfficeEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: string
   );
 };
 
-// New component for the fire extinguisher image
-const FireExtinguisherImage = ({ 
+// New component for a realistic fire extinguisher
+const FireExtinguisherRealistic = ({ 
   position, 
   onInteract 
 }: { 
   position: [number, number, number], 
   onInteract: () => void 
 }) => {
+  // Load fire extinguisher texture
   const extinguisherTexture = useTexture('/lovable-uploads/4dcbc36e-522e-4d20-b876-cda8bcd37f49.png');
   const [hovered, setHovered] = useState(false);
   const [interacted, setInteracted] = useState(false);
@@ -221,7 +217,7 @@ const FireExtinguisherImage = ({
   
   return (
     <group ref={billboardRef} position={position}>
-      {/* The image plane - slightly increased size to make it more visible */}
+      {/* The extinguisher plane - increased size for better visibility */}
       <mesh
         onClick={handleClick}
         onPointerOver={() => setHovered(true)}
@@ -238,7 +234,7 @@ const FireExtinguisherImage = ({
       
       {/* Display label when hovered */}
       {hovered && (
-        <Html position={[0, 1.2, 0]}>
+        <Html position={[0, 1.4, 0]}>
           <div className="bg-black bg-opacity-70 text-white px-2 py-1 rounded text-sm">
             Fire Extinguisher
           </div>
