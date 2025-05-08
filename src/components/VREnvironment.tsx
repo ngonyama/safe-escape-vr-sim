@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { OrbitControls, useGLTF, Text, Html as DreiHtml, useTexture, Sky } from '@react-three/drei';
 import * as THREE from 'three';
-import { FireExtinguisher, BriefcaseMedical } from 'lucide-react';
+import { Flame, FireExtinguisher, FirstAidKit } from 'lucide-react';
 
 // Scene components for different environments
 const OfficeEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: string) => void }) => {
@@ -241,40 +241,6 @@ const OfficeEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: string
     );
   };
   
-  // New function to create a TV screen with e4 logo
-  const createTVScreen = (position: [number, number, number], rotation: number = 0, scale: number = 1) => {
-    return (
-      <group position={position} rotation={[0, rotation, 0]}>
-        {/* TV Frame */}
-        <mesh castShadow>
-          <boxGeometry args={[1.6 * scale, 1.0 * scale, 0.1 * scale]} />
-          <meshStandardMaterial color="#111111" metalness={0.5} roughness={0.2} />
-        </mesh>
-        
-        {/* TV Stand */}
-        <mesh position={[0, -0.6 * scale, 0.1 * scale]} castShadow>
-          <boxGeometry args={[0.3 * scale, 0.2 * scale, 0.2 * scale]} />
-          <meshStandardMaterial color="#333333" metalness={0.3} roughness={0.4} />
-        </mesh>
-        
-        {/* TV Base */}
-        <mesh position={[0, -0.7 * scale, 0.2 * scale]} castShadow>
-          <boxGeometry args={[0.8 * scale, 0.1 * scale, 0.4 * scale]} />
-          <meshStandardMaterial color="#222222" metalness={0.3} roughness={0.4} />
-        </mesh>
-        
-        {/* TV Screen with e4 logo */}
-        <mesh position={[0, 0, 0.051 * scale]}>
-          <planeGeometry args={[1.5 * scale, 0.9 * scale]} />
-          <meshStandardMaterial color="#000000" emissive="#ffffff" emissiveIntensity={0.3} />
-        </mesh>
-        
-        {/* e4 Logo on screen */}
-        <E4Logo position={[0, 0, 0.052 * scale]} scale={scale * 0.6} />
-      </group>
-    );
-  };
-  
   return (
     <>
       {/* Blue sky */}
@@ -313,16 +279,6 @@ const OfficeEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: string
         <boxGeometry args={[0.2, 4, 20]} />
         <meshStandardMaterial color="#d3e4fd" />
       </mesh>
-      
-      {/* Add TV screens to the office with e4 logo */}
-      {/* TV on the left wall */}
-      {createTVScreen([-9.9, 2, -3], Math.PI / 2, 1.2)}
-      
-      {/* TV on the right wall */}
-      {createTVScreen([9.9, 2, 3], -Math.PI / 2, 1.2)}
-      
-      {/* TV on the back wall */}
-      {createTVScreen([3, 2, -9.9], 0, 1.5)}
       
       {/* Interactive objects */}
       {/* Exit door */}
@@ -515,10 +471,8 @@ const OfficeEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: string
       {createOfficeWorker([14, 0, -8.5], Math.PI / 3)}
       {createOfficeWorker([15.5, 0, -7], -Math.PI / 4)}
 
-      {/* Animated Fire */}
-      <group ref={flameRef} position={[0, 0.55, 2]}>
-        <FireEffect />
-      </group>
+      {/* Animated Fire Image in place of the flame */}
+      <AnimatedFireImage flameRef={flameRef} position={[0, 0.55, 2]} />
       
       {/* Enhanced Lighting */}
       <ambientLight intensity={1.2} /> 
@@ -534,23 +488,6 @@ const OfficeEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: string
       <pointLight position={[-5, 5, 0]} intensity={0.8} color="#fffaea" />
       <pointLight position={[5, 3, -5]} intensity={0.8} color="#eaffff" />
     </>
-  );
-};
-
-// E4 Logo component
-const E4Logo = ({ position, scale = 1 }: { position: [number, number, number], scale?: number }) => {
-  // Use the uploaded e4 logo
-  const texture = useTexture('/lovable-uploads/0169e8d3-306e-4817-8bf9-0cd442ad637d.png');
-  
-  return (
-    <mesh position={position}>
-      <planeGeometry args={[1 * scale, 1 * scale]} />
-      <meshBasicMaterial 
-        map={texture} 
-        transparent={true}
-        opacity={1}
-      />
-    </mesh>
   );
 };
 
@@ -570,46 +507,48 @@ const EmergencyExitSign = ({ position }: { position: [number, number, number] })
   );
 };
 
-// New improved fire effect component
-const FireEffect = () => {
-  const fireTexture = useTexture('/scenarios/fire.jpg');
-  const flameRef = useRef<THREE.Group>(new THREE.Group());
+// New component for the animated fire image
+const AnimatedFireImage = ({ flameRef, position }: { flameRef: React.RefObject<THREE.Group>, position: [number, number, number] }) => {
+  // Load the fire image texture
+  const fireTexture = useTexture('/lovable-uploads/f0f134d6-f524-4ac9-8d77-4ccffd5283a5.png');
   
   useFrame(({ clock }) => {
-    const time = clock.getElapsedTime();
-    
-    // More complex animation for the fire
     if (flameRef.current) {
-      // Add subtle swaying motion
+      const time = clock.getElapsedTime();
+      // Add more complex animation for the fire
       flameRef.current.rotation.y = Math.sin(time * 1.5) * 0.2;
+      flameRef.current.position.y = position[1] + Math.sin(time * 3) * 0.05;
       
-      // Add vertical pulsing
-      flameRef.current.position.y = Math.sin(time * 3) * 0.05;
-      
-      // Vary the scale slightly over time for "breathing" effect
-      const scaleX = 1 + Math.sin(time * 2.5) * 0.1;
-      const scaleY = 1 + Math.cos(time * 3.2) * 0.15;
-      flameRef.current.scale.set(scaleX, scaleY, 1);
+      // Make the fire sway slightly
+      flameRef.current.rotation.z = Math.sin(time * 2) * 0.05;
     }
   });
   
   return (
-    <group ref={flameRef}>
-      {/* Billboard ensures the fire always faces the camera */}
+    <group ref={flameRef} position={position}>
+      {/* Create a billboarded plane that always faces the camera */}
       <Billboard>
         <mesh>
           <planeGeometry args={[1, 1.5]} />
-          <meshBasicMaterial 
+          <meshStandardMaterial 
             map={fireTexture} 
             transparent={true} 
-            opacity={1}
+            emissive="#ff3300"
+            emissiveIntensity={2}
             side={THREE.DoubleSide}
-            depthWrite={false}
           />
         </mesh>
       </Billboard>
       
-      {/* Dynamic point light for the fire */}
+      {/* Light emitted by the fire */}
+      <pointLight 
+        color="#ff5500" 
+        intensity={2} 
+        distance={5}
+        decay={2}
+      />
+      
+      {/* Flickering light for ambience */}
       <FlickeringLight position={[0, 0.5, 0]} />
     </group>
   );
@@ -643,34 +582,18 @@ const FlickeringLight = ({ position }: { position: [number, number, number] }) =
         0.1 * Math.sin(time * 18.7);
       
       lightRef.current.intensity = flicker * 2;
-      
-      // Slightly vary the light color to simulate varying flame temperature
-      const hue = 0.1 + Math.sin(time * 3) * 0.02; // Vary between orange and red
-      lightRef.current.color.setHSL(hue, 1, 0.5);
     }
   });
   
   return (
-    <>
-      {/* Main fire light */}
-      <pointLight 
-        ref={lightRef} 
-        position={position} 
-        color="#ff7700" 
-        intensity={2} 
-        distance={4}
-        decay={2}
-      />
-      
-      {/* Subtle ambient glow */}
-      <pointLight 
-        position={[position[0], position[1] - 0.2, position[2]]} 
-        color="#ff3300" 
-        intensity={0.8} 
-        distance={2}
-        decay={3}
-      />
-    </>
+    <pointLight 
+      ref={lightRef} 
+      position={position} 
+      color="#ff7700" 
+      intensity={2} 
+      distance={3}
+      decay={2}
+    />
   );
 };
 
@@ -784,40 +707,6 @@ const FactoryEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: strin
     );
   };
   
-  // New function to create a TV screen with e4 logo for the factory
-  const createTVScreen = (position: [number, number, number], rotation: number = 0, scale: number = 1) => {
-    return (
-      <group position={position} rotation={[0, rotation, 0]}>
-        {/* TV Frame */}
-        <mesh castShadow>
-          <boxGeometry args={[1.6 * scale, 1.0 * scale, 0.1 * scale]} />
-          <meshStandardMaterial color="#111111" metalness={0.5} roughness={0.2} />
-        </mesh>
-        
-        {/* TV Stand */}
-        <mesh position={[0, -0.6 * scale, 0.1 * scale]} castShadow>
-          <boxGeometry args={[0.3 * scale, 0.2 * scale, 0.2 * scale]} />
-          <meshStandardMaterial color="#333333" metalness={0.3} roughness={0.4} />
-        </mesh>
-        
-        {/* TV Base */}
-        <mesh position={[0, -0.7 * scale, 0.2 * scale]} castShadow>
-          <boxGeometry args={[0.8 * scale, 0.1 * scale, 0.4 * scale]} />
-          <meshStandardMaterial color="#222222" metalness={0.3} roughness={0.4} />
-        </mesh>
-        
-        {/* TV Screen with e4 logo */}
-        <mesh position={[0, 0, 0.051 * scale]}>
-          <planeGeometry args={[1.5 * scale, 0.9 * scale]} />
-          <meshStandardMaterial color="#000000" emissive="#ffffff" emissiveIntensity={0.3} />
-        </mesh>
-        
-        {/* e4 Logo on screen */}
-        <E4Logo position={[0, 0, 0.052 * scale]} scale={scale * 0.6} />
-      </group>
-    );
-  };
-  
   return (
     <>
       {/* Add blue sky to factory environment */}
@@ -856,16 +745,6 @@ const FactoryEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: strin
         <boxGeometry args={[0.3, 6, 30]} />
         <meshStandardMaterial color="#f2fce2" />
       </mesh>
-      
-      {/* Add TV screens to the factory with e4 logo */}
-      {/* TV on the left wall */}
-      {createTVScreen([-14.9, 3, -5], Math.PI / 2, 1.2)}
-      
-      {/* TV on the right wall */}
-      {createTVScreen([14.9, 3, 5], -Math.PI / 2, 1.2)}
-      
-      {/* TV on the back wall */}
-      {createTVScreen([-5, 3, -14.9], 0, 1.5)}
       
       {/* Industrial machinery - Brightened */}
       <mesh position={[-5, 1.2, -5]} castShadow>
@@ -1128,40 +1007,6 @@ const WarehouseEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: str
     );
   };
   
-  // New function to create a TV screen with e4 logo for the warehouse
-  const createTVScreen = (position: [number, number, number], rotation: number = 0, scale: number = 1) => {
-    return (
-      <group position={position} rotation={[0, rotation, 0]}>
-        {/* TV Frame */}
-        <mesh castShadow>
-          <boxGeometry args={[1.6 * scale, 1.0 * scale, 0.1 * scale]} />
-          <meshStandardMaterial color="#111111" metalness={0.5} roughness={0.2} />
-        </mesh>
-        
-        {/* TV Stand */}
-        <mesh position={[0, -0.6 * scale, 0.1 * scale]} castShadow>
-          <boxGeometry args={[0.3 * scale, 0.2 * scale, 0.2 * scale]} />
-          <meshStandardMaterial color="#333333" metalness={0.3} roughness={0.4} />
-        </mesh>
-        
-        {/* TV Base */}
-        <mesh position={[0, -0.7 * scale, 0.2 * scale]} castShadow>
-          <boxGeometry args={[0.8 * scale, 0.1 * scale, 0.4 * scale]} />
-          <meshStandardMaterial color="#222222" metalness={0.3} roughness={0.4} />
-        </mesh>
-        
-        {/* TV Screen with e4 logo */}
-        <mesh position={[0, 0, 0.051 * scale]}>
-          <planeGeometry args={[1.5 * scale, 0.9 * scale]} />
-          <meshStandardMaterial color="#000000" emissive="#ffffff" emissiveIntensity={0.3} />
-        </mesh>
-        
-        {/* e4 Logo on screen */}
-        <E4Logo position={[0, 0, 0.052 * scale]} scale={scale * 0.6} />
-      </group>
-    );
-  };
-  
   return (
     <>
       {/* Add blue sky to warehouse environment */}
@@ -1200,16 +1045,6 @@ const WarehouseEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: str
         <boxGeometry args={[0.3, 8, 30]} />
         <meshStandardMaterial color="#fde1d3" />
       </mesh>
-      
-      {/* Add TV screens to the warehouse with e4 logo */}
-      {/* TV on the left wall */}
-      {createTVScreen([-14.9, 4, -8], Math.PI / 2, 1.5)}
-      
-      {/* TV on the right wall */}
-      {createTVScreen([14.9, 4, 8], -Math.PI / 2, 1.5)}
-      
-      {/* TV on the back wall */}
-      {createTVScreen([8, 4, -14.9], 0, 1.5)}
       
       {/* Shelving units */}
       {createShelf(-5, -8)}
@@ -1381,16 +1216,14 @@ const InteractiveObject = ({
       <meshStandardMaterial 
         color={interacted ? "#33cc33" : hovered ? hoverColor : color} 
         transparent={transparent}
-        opacity={transparent ? 0.2 : 1.0}
+        opacity={transparent ? 0.0 : 1.0}
       />
       {hovered && (
-        <group position={[0, geometry[1] / 2 + 0.3, 0]}>
-          <DreiHtml center>
-            <div className="bg-black bg-opacity-70 text-white px-2 py-1 rounded text-sm">
-              {label}
-            </div>
-          </DreiHtml>
-        </group>
+        <Html position={[0, geometry[1] / 2 + 0.3, 0]}>
+          <div className="bg-black bg-opacity-70 text-white px-2 py-1 rounded text-sm">
+            {label}
+          </div>
+        </Html>
       )}
     </mesh>
   );
@@ -1401,30 +1234,4 @@ const Html = ({ children, position }: {
   children: React.ReactNode;
   position: [number, number, number]; 
 }) => {
-  return (
-    <DreiHtml position={position} center>
-      <div className="html-label">{children}</div>
-    </DreiHtml>
-  );
-};
-
-// Root VREnvironment component
-const VREnvironment = ({
-  environmentType = 'office',
-  scenarioType = '',
-  onCompleteTask,
-}: {
-  environmentType: string;
-  scenarioType: string;
-  onCompleteTask: (taskId: string) => void;
-}) => {
-  return (
-    <Canvas shadows camera={{ position: [0, 0, 0], fov: 60 }}>
-      {environmentType === 'office' && <OfficeEnvironment onCompleteTask={onCompleteTask} />}
-      {environmentType === 'factory' && <FactoryEnvironment onCompleteTask={onCompleteTask} />}
-      {environmentType === 'warehouse' && <WarehouseEnvironment onCompleteTask={onCompleteTask} />}
-    </Canvas>
-  );
-};
-
-export default VREnvironment;
+ 
