@@ -137,9 +137,9 @@ const OfficeEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: string
         label="Exit Door"
       />
       
-      {/* Fire extinguisher - Move away from the wall (z position changed from 9.7 to 8.5) */}
+      {/* Fire extinguisher - Move further away from the wall and make it more visible */}
       <FireExtinguisherImage 
-        position={[5, 1, 8.5]} 
+        position={[5, 1, 7.5]} 
         onInteract={() => onCompleteTask('1')} 
       />
 
@@ -193,7 +193,7 @@ const FireExtinguisherImage = ({
   position: [number, number, number], 
   onInteract: () => void 
 }) => {
-  const extinguisherTexture = useTexture('/lovable-uploads/41703ed7-da9e-4a00-b756-2ee0e8898686.png');
+  const extinguisherTexture = useTexture('/lovable-uploads/4dcbc36e-522e-4d20-b876-cda8bcd37f49.png');
   const [hovered, setHovered] = useState(false);
   const [interacted, setInteracted] = useState(false);
   
@@ -216,14 +216,14 @@ const FireExtinguisherImage = ({
   
   return (
     <group ref={billboardRef} position={position}>
-      {/* The image plane */}
+      {/* The image plane - slightly increased size to make it more visible */}
       <mesh
         onClick={handleClick}
         onPointerOver={() => setHovered(true)}
         onPointerOut={() => setHovered(false)}
-        scale={hovered ? 1.1 : 1}
+        scale={hovered ? 1.2 : 1.1}
       >
-        <planeGeometry args={[1, 2]} /> {/* Adjusted size to match extinguisher proportions */}
+        <planeGeometry args={[1.2, 2.2]} /> {/* Adjusted size to match extinguisher proportions */}
         <meshBasicMaterial 
           map={extinguisherTexture} 
           transparent={true}
@@ -240,8 +240,8 @@ const FireExtinguisherImage = ({
         </Html>
       )}
       
-      {/* Add point light to make it stand out */}
-      <pointLight color="#ff3300" intensity={0.5} distance={1} />
+      {/* Add point light to highlight the extinguisher */}
+      <pointLight color="#ff5555" intensity={0.8} distance={2} />
     </group>
   );
 };
