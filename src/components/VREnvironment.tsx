@@ -137,10 +137,15 @@ const OfficeEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: string
         label="Exit Door"
       />
       
-      {/* Fire extinguisher - Move further away from the wall and make it more visible */}
-      <FireExtinguisherImage 
-        position={[5, 1, 7.5]} 
-        onInteract={() => onCompleteTask('1')} 
+      {/* Fire extinguisher - as interactive 3D object instead of image */}
+      <InteractiveObject
+        position={[5, 1, 7.5]}
+        geometry={[0.5, 1.2, 0.5]}
+        color="#ff3333"
+        hoverColor="#ff5555"
+        taskId="1"
+        onInteract={onCompleteTask}
+        label="Fire Extinguisher"
       />
 
       {/* Evacuation sign */}
@@ -820,6 +825,11 @@ const InteractiveObject = ({
             {label}
           </div>
         </Html>
+      )}
+      
+      {/* Add light to highlight the fire extinguisher */}
+      {taskId === "1" && (
+        <pointLight color="#ff5555" intensity={0.8} distance={2} />
       )}
     </mesh>
   );
