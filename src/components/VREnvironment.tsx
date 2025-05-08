@@ -1,3 +1,4 @@
+
 import { Canvas, useFrame, useThree, extend } from '@react-three/fiber';
 import { useRef, useState, useEffect, Suspense } from 'react';
 import { Environment, Html, OrbitControls, Stats, Text, useGLTF } from '@react-three/drei';
@@ -17,6 +18,7 @@ interface InteractiveObjectProps {
   onInteract: (taskId: string) => void;
   label: string;
   children?: React.ReactNode;
+  rotation?: [number, number, number];
 }
 
 const InteractiveObject = ({
@@ -26,7 +28,8 @@ const InteractiveObject = ({
   taskId,
   onInteract,
   label,
-  children
+  children,
+  rotation
 }: InteractiveObjectProps) => {
   const mesh = useRef<THREE.Mesh>(null!);
   const [hovered, setHovered] = useState(false);
@@ -42,6 +45,7 @@ const InteractiveObject = ({
       <mesh
         ref={mesh}
         position={position}
+        rotation={rotation}
         geometry={geometry}
         material={material}
         castShadow
