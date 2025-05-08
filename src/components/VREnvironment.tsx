@@ -137,9 +137,9 @@ const OfficeEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: string
         label="Exit Door"
       />
       
-      {/* Fire extinguisher - Replace with 2D image */}
+      {/* Fire extinguisher - Move away from the wall (z position changed from 9.7 to 8.5) */}
       <FireExtinguisherImage 
-        position={[5, 1, 9.7]} 
+        position={[5, 1, 8.5]} 
         onInteract={() => onCompleteTask('1')} 
       />
 
