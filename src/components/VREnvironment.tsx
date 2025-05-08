@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { OrbitControls, useGLTF, Text } from '@react-three/drei';
 import * as THREE from 'three';
+import { Flame, FireExtinguisher } from 'lucide-react';
 
 // Scene components for different environments
 const OfficeEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: string) => void }) => {
@@ -16,6 +17,9 @@ const OfficeEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: string
   
   // Camera look direction state
   const [lookUpDown, setLookUpDown] = useState(0);
+  
+  // Create a flame effect using particles
+  const flameRef = useRef<THREE.Group>(new THREE.Group());
   
   useEffect(() => {
     // Set initial position - even lower height (0.7) for a more realistic view
@@ -62,7 +66,7 @@ const OfficeEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: string
   }, [scene, camera]);
   
   // Movement and look system
-  useFrame(() => {
+  useFrame(({ clock }) => {
     const speed = 0.03; // Maintain reduced speed for realistic walking pace
     if (moveState.forward) playerRef.current.translateZ(-speed);
     if (moveState.backward) playerRef.current.translateZ(speed);
@@ -81,7 +85,44 @@ const OfficeEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: string
     
     // Keep player at a consistent low height (no flying)
     playerRef.current.position.y = 0.7;
+    
+    // Make the flame flicker
+    if (flameRef.current) {
+      const time = clock.getElapsedTime();
+      const flickerSpeed = 5;
+      const flickerAmount = 0.1;
+      flameRef.current.scale.x = 1 + Math.sin(time * flickerSpeed) * flickerAmount;
+      flameRef.current.scale.y = 1 + Math.cos(time * flickerSpeed * 1.2) * flickerAmount;
+    }
   });
+  
+  // Fire particle system for a more realistic flame
+  const FireParticles = () => {
+    return (
+      <group ref={flameRef} position={[0, 0.55, 2]}>
+        {/* Base of the flame */}
+        <mesh position={[0, 0, 0]} castShadow>
+          <coneGeometry args={[0.25, 0.6, 12]} />
+          <meshStandardMaterial color="#ff3d00" emissive="#ff5722" emissiveIntensity={2} />
+        </mesh>
+        
+        {/* Middle part of flame */}
+        <mesh position={[0, 0.2, 0]} castShadow>
+          <coneGeometry args={[0.15, 0.5, 12]} />
+          <meshStandardMaterial color="#ff9500" emissive="#ffb74d" emissiveIntensity={2} />
+        </mesh>
+        
+        {/* Tip of flame */}
+        <mesh position={[0, 0.4, 0]} castShadow>
+          <coneGeometry args={[0.05, 0.3, 8]} />
+          <meshStandardMaterial color="#ffeb3b" emissive="#ffeb3b" emissiveIntensity={2} />
+        </mesh>
+        
+        {/* Light emitted by the flame */}
+        <pointLight position={[0, 0.2, 0]} color="#ff5722" intensity={2} distance={3} />
+      </group>
+    );
+  };
   
   return (
     <>
@@ -124,16 +165,44 @@ const OfficeEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: string
         label="Exit Door"
       />
       
-      {/* Fire extinguisher */}
-      <InteractiveObject
-        position={[5, 0.7, 9.7]}
-        geometry={[0.4, 1.4, 0.4]}
-        color="#ff3333"
-        hoverColor="#ff5555"
-        taskId="1"
-        onInteract={onCompleteTask}
-        label="Fire Extinguisher"
-      />
+      {/* Fire extinguisher - Replace red block with a proper fire extinguisher */}
+      <group position={[5, 0.7, 9.7]} castShadow>
+        {/* Extinguisher body */}
+        <mesh position={[0, 0.5, 0]}>
+          <cylinderGeometry args={[0.15, 0.15, 1, 16]} />
+          <meshStandardMaterial color="#ff3333" metalness={0.5} roughness={0.2} />
+        </mesh>
+        
+        {/* Extinguisher top */}
+        <mesh position={[0, 1, 0]}>
+          <cylinderGeometry args={[0.08, 0.15, 0.2, 16]} />
+          <meshStandardMaterial color="#bbbbbb" metalness={0.7} roughness={0.2} />
+        </mesh>
+        
+        {/* Extinguisher nozzle */}
+        <mesh position={[0.12, 1.1, 0]} rotation={[0, 0, Math.PI / 4]}>
+          <cylinderGeometry args={[0.03, 0.03, 0.25, 8]} />
+          <meshStandardMaterial color="#333333" />
+        </mesh>
+        
+        {/* Handle */}
+        <mesh position={[0, 0.8, 0.15]}>
+          <boxGeometry args={[0.04, 0.12, 0.08]} />
+          <meshStandardMaterial color="#333333" />
+        </mesh>
+
+        {/* Make this interactive for task completion */}
+        <InteractiveObject
+          position={[0, 0.5, 0]}
+          geometry={[0.4, 1.4, 0.4]}
+          color="transparent"
+          hoverColor="transparent"
+          taskId="1"
+          onInteract={onCompleteTask}
+          label="Fire Extinguisher"
+          transparent={true}
+        />
+      </group>
 
       {/* Evacuation sign */}
       <InteractiveObject
@@ -157,10 +226,8 @@ const OfficeEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: string
         <meshStandardMaterial color="#a56035" />
       </mesh>
 
-      <mesh position={[0, 0.55, 2]} castShadow>
-        <boxGeometry args={[0.5, 0.7, 0.5]} />
-        <meshStandardMaterial color="#ff3333" />
-      </mesh>
+      {/* Flame on the table - replacing the red block */}
+      <FireParticles />
       
       {/* Enhanced Lighting */}
       {/* Doubled from 0.5 */}
@@ -622,6 +689,7 @@ interface InteractiveObjectProps {
   taskId: string;
   onInteract: (taskId: string) => void;
   label: string;
+  transparent?: boolean;
 }
 
 const InteractiveObject = ({
@@ -632,6 +700,7 @@ const InteractiveObject = ({
   taskId,
   onInteract,
   label,
+  transparent = false,
 }: InteractiveObjectProps) => {
   const [hovered, setHovered] = useState(false);
   const [interacted, setInteracted] = useState(false);
@@ -655,6 +724,8 @@ const InteractiveObject = ({
       <boxGeometry args={geometry} />
       <meshStandardMaterial 
         color={interacted ? "#33cc33" : hovered ? hoverColor : color} 
+        transparent={transparent}
+        opacity={transparent ? 0.0 : 1.0}
       />
       {hovered && (
         <Html position={[0, geometry[1] / 2 + 0.3, 0]}>
