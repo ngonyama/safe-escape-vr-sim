@@ -1,9 +1,8 @@
-
 import React, { useEffect, useRef, useState } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { OrbitControls, useGLTF, Text, Html as DreiHtml, useTexture, Sky } from '@react-three/drei';
 import * as THREE from 'three';
-import { Flame, FireExtinguisher, BriefcaseMedical } from 'lucide-react';
+import { FireExtinguisher, BriefcaseMedical } from 'lucide-react';
 
 // Scene components for different environments
 const OfficeEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: string) => void }) => {
@@ -569,10 +568,10 @@ const EmergencyExitSign = ({ position }: { position: [number, number, number] })
   );
 };
 
-// New component for the animated fire image
+// Fixed AnimatedFireImage component
 const AnimatedFireImage = ({ flameRef, position }: { flameRef: React.RefObject<THREE.Group>, position: [number, number, number] }) => {
   // Load the fire image texture
-  const fireTexture = useTexture('/lovable-uploads/f0f134d6-f524-4ac9-8d77-4ccffd5283a5.png');
+  const fireTexture = useTexture('/scenarios/fire.jpg');
   
   useFrame(({ clock }) => {
     if (flameRef.current) {
