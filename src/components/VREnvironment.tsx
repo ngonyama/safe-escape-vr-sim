@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useState } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { OrbitControls, useGLTF, Text, Html as DreiHtml, useTexture } from '@react-three/drei';
@@ -138,44 +137,11 @@ const OfficeEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: string
         label="Exit Door"
       />
       
-      {/* Fire extinguisher - Replace red block with a proper fire extinguisher */}
-      <group position={[5, 0.7, 9.7]} castShadow>
-        {/* Extinguisher body */}
-        <mesh position={[0, 0.5, 0]}>
-          <cylinderGeometry args={[0.15, 0.15, 1, 16]} />
-          <meshStandardMaterial color="#ff3333" metalness={0.5} roughness={0.2} />
-        </mesh>
-        
-        {/* Extinguisher top */}
-        <mesh position={[0, 1, 0]}>
-          <cylinderGeometry args={[0.08, 0.15, 0.2, 16]} />
-          <meshStandardMaterial color="#bbbbbb" metalness={0.7} roughness={0.2} />
-        </mesh>
-        
-        {/* Extinguisher nozzle */}
-        <mesh position={[0.12, 1.1, 0]} rotation={[0, 0, Math.PI / 4]}>
-          <cylinderGeometry args={[0.03, 0.03, 0.25, 8]} />
-          <meshStandardMaterial color="#333333" />
-        </mesh>
-        
-        {/* Handle */}
-        <mesh position={[0, 0.8, 0.15]}>
-          <boxGeometry args={[0.04, 0.12, 0.08]} />
-          <meshStandardMaterial color="#333333" />
-        </mesh>
-
-        {/* Make this interactive for task completion */}
-        <InteractiveObject
-          position={[0, 0.5, 0]}
-          geometry={[0.4, 1.4, 0.4]}
-          color="transparent"
-          hoverColor="transparent"
-          taskId="1"
-          onInteract={onCompleteTask}
-          label="Fire Extinguisher"
-          transparent={true}
-        />
-      </group>
+      {/* Fire extinguisher - Replace with 2D image */}
+      <FireExtinguisherImage 
+        position={[5, 1, 9.7]} 
+        onInteract={() => onCompleteTask('1')} 
+      />
 
       {/* Evacuation sign */}
       <InteractiveObject
@@ -216,6 +182,67 @@ const OfficeEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: string
       <pointLight position={[-5, 5, 0]} intensity={0.6} color="#fffaea" />
       <pointLight position={[5, 3, -5]} intensity={0.6} color="#eaffff" />
     </>
+  );
+};
+
+// New component for the fire extinguisher image
+const FireExtinguisherImage = ({ 
+  position, 
+  onInteract 
+}: { 
+  position: [number, number, number], 
+  onInteract: () => void 
+}) => {
+  const extinguisherTexture = useTexture('/lovable-uploads/41703ed7-da9e-4a00-b756-2ee0e8898686.png');
+  const [hovered, setHovered] = useState(false);
+  const [interacted, setInteracted] = useState(false);
+  
+  // Use billboard to make image always face the camera
+  const { camera } = useThree();
+  const billboardRef = useRef<THREE.Group>(null);
+  
+  useFrame(() => {
+    if (billboardRef.current) {
+      billboardRef.current.quaternion.copy(camera.quaternion);
+    }
+  });
+  
+  const handleClick = () => {
+    if (!interacted) {
+      setInteracted(true);
+      onInteract();
+    }
+  };
+  
+  return (
+    <group ref={billboardRef} position={position}>
+      {/* The image plane */}
+      <mesh
+        onClick={handleClick}
+        onPointerOver={() => setHovered(true)}
+        onPointerOut={() => setHovered(false)}
+        scale={hovered ? 1.1 : 1}
+      >
+        <planeGeometry args={[1, 2]} /> {/* Adjusted size to match extinguisher proportions */}
+        <meshBasicMaterial 
+          map={extinguisherTexture} 
+          transparent={true}
+          opacity={interacted ? 0.7 : 1}
+        />
+      </mesh>
+      
+      {/* Display label when hovered */}
+      {hovered && (
+        <Html position={[0, 1.2, 0]}>
+          <div className="bg-black bg-opacity-70 text-white px-2 py-1 rounded text-sm">
+            Fire Extinguisher
+          </div>
+        </Html>
+      )}
+      
+      {/* Add point light to make it stand out */}
+      <pointLight color="#ff3300" intensity={0.5} distance={1} />
+    </group>
   );
 };
 
@@ -309,7 +336,7 @@ const FlickeringLight = ({ position }: { position: [number, number, number] }) =
   );
 };
 
-// Factory Environment for industrial scenarios - Enhanced lighting
+// Keep existing code for FactoryEnvironment
 const FactoryEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: string) => void }) => {
   const { scene, camera } = useThree();
   const playerRef = useRef<THREE.Group>(new THREE.Group());
