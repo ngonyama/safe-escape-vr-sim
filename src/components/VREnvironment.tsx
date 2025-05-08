@@ -1,6 +1,7 @@
+
 import React, { useEffect, useRef, useState } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { OrbitControls, useGLTF, Text } from '@react-three/drei';
+import { OrbitControls, useGLTF, Text, Html as DreiHtml, useTexture } from '@react-three/drei';
 import * as THREE from 'three';
 import { Flame, FireExtinguisher } from 'lucide-react';
 
@@ -95,34 +96,6 @@ const OfficeEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: string
       flameRef.current.scale.y = 1 + Math.cos(time * flickerSpeed * 1.2) * flickerAmount;
     }
   });
-  
-  // Fire particle system for a more realistic flame
-  const FireParticles = () => {
-    return (
-      <group ref={flameRef} position={[0, 0.55, 2]}>
-        {/* Base of the flame */}
-        <mesh position={[0, 0, 0]} castShadow>
-          <coneGeometry args={[0.25, 0.6, 12]} />
-          <meshStandardMaterial color="#ff3d00" emissive="#ff5722" emissiveIntensity={2} />
-        </mesh>
-        
-        {/* Middle part of flame */}
-        <mesh position={[0, 0.2, 0]} castShadow>
-          <coneGeometry args={[0.15, 0.5, 12]} />
-          <meshStandardMaterial color="#ff9500" emissive="#ffb74d" emissiveIntensity={2} />
-        </mesh>
-        
-        {/* Tip of flame */}
-        <mesh position={[0, 0.4, 0]} castShadow>
-          <coneGeometry args={[0.05, 0.3, 8]} />
-          <meshStandardMaterial color="#ffeb3b" emissive="#ffeb3b" emissiveIntensity={2} />
-        </mesh>
-        
-        {/* Light emitted by the flame */}
-        <pointLight position={[0, 0.2, 0]} color="#ff5722" intensity={2} distance={3} />
-      </group>
-    );
-  };
   
   return (
     <>
@@ -226,15 +199,12 @@ const OfficeEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: string
         <meshStandardMaterial color="#a56035" />
       </mesh>
 
-      {/* Flame on the table - replacing the red block */}
-      <FireParticles />
+      {/* Animated Fire Image in place of the flame */}
+      <AnimatedFireImage flameRef={flameRef} position={[0, 0.55, 2]} />
       
       {/* Enhanced Lighting */}
-      {/* Doubled from 0.5 */}
       <ambientLight intensity={1.0} /> 
-      {/* Enhanced and added colors - FIXED PROPS */}
       <hemisphereLight intensity={0.8} color="#ffffff" groundColor="#bbbbff" /> 
-      {/* Doubled from 0.5 */}
       <directionalLight
         position={[10, 10, 10]}
         intensity={1.0}
@@ -246,6 +216,96 @@ const OfficeEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: string
       <pointLight position={[-5, 5, 0]} intensity={0.6} color="#fffaea" />
       <pointLight position={[5, 3, -5]} intensity={0.6} color="#eaffff" />
     </>
+  );
+};
+
+// New component for the animated fire image
+const AnimatedFireImage = ({ flameRef, position }: { flameRef: React.RefObject<THREE.Group>, position: [number, number, number] }) => {
+  // Load the fire image texture
+  const fireTexture = useTexture('/lovable-uploads/f0f134d6-f524-4ac9-8d77-4ccffd5283a5.png');
+  
+  useFrame(({ clock }) => {
+    if (flameRef.current) {
+      const time = clock.getElapsedTime();
+      // Add more complex animation for the fire
+      flameRef.current.rotation.y = Math.sin(time * 1.5) * 0.2;
+      flameRef.current.position.y = position[1] + Math.sin(time * 3) * 0.05;
+      
+      // Make the fire sway slightly
+      flameRef.current.rotation.z = Math.sin(time * 2) * 0.05;
+    }
+  });
+  
+  return (
+    <group ref={flameRef} position={position}>
+      {/* Create a billboarded plane that always faces the camera */}
+      <Billboard>
+        <mesh>
+          <planeGeometry args={[1, 1.5]} />
+          <meshStandardMaterial 
+            map={fireTexture} 
+            transparent={true} 
+            emissive="#ff3300"
+            emissiveIntensity={2}
+            side={THREE.DoubleSide}
+          />
+        </mesh>
+      </Billboard>
+      
+      {/* Light emitted by the fire */}
+      <pointLight 
+        color="#ff5500" 
+        intensity={2} 
+        distance={5}
+        decay={2}
+      />
+      
+      {/* Flickering light for ambience */}
+      <FlickeringLight position={[0, 0.5, 0]} />
+    </group>
+  );
+};
+
+// Billboard component to always face the camera
+const Billboard = ({ children }: { children: React.ReactNode }) => {
+  const billboardRef = useRef<THREE.Group>(null);
+  const { camera } = useThree();
+  
+  useFrame(() => {
+    if (billboardRef.current) {
+      billboardRef.current.quaternion.copy(camera.quaternion);
+    }
+  });
+  
+  return <group ref={billboardRef}>{children}</group>;
+};
+
+// Flickering light component
+const FlickeringLight = ({ position }: { position: [number, number, number] }) => {
+  const lightRef = useRef<THREE.PointLight>(null);
+  
+  useFrame(({ clock }) => {
+    if (lightRef.current) {
+      const time = clock.getElapsedTime();
+      // Create irregular flickering pattern
+      const flicker = 0.8 + 
+        0.2 * Math.sin(time * 10) + 
+        0.15 * Math.sin(time * 7.3) + 
+        0.1 * Math.sin(time * 18.7);
+      
+      lightRef.current.intensity = flicker * 2;
+    }
+  });
+  
+  return (
+    <pointLight 
+      ref={lightRef} 
+      position={position} 
+      color="#ff7700" 
+      intensity={2} 
+      distance={3}
+      decay={2}
+    />
   );
 };
 
