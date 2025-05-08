@@ -163,25 +163,25 @@ const OfficeEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: string
         <meshStandardMaterial color="#e0e0e0" />
       </mesh>
       
-      {/* Walls - Brightened */}
+      {/* Walls - Changed colors to soft blue */}
       <mesh position={[0, 2, -10]} castShadow receiveShadow>
         <boxGeometry args={[20, 4, 0.2]} />
-        <meshStandardMaterial color="#ffffff" />
+        <meshStandardMaterial color="#d3e4fd" />
       </mesh>
       
       <mesh position={[0, 2, 10]} castShadow receiveShadow>
         <boxGeometry args={[20, 4, 0.2]} />
-        <meshStandardMaterial color="#ffffff" />
+        <meshStandardMaterial color="#d3e4fd" />
       </mesh>
       
       <mesh position={[-10, 2, 0]} castShadow receiveShadow>
         <boxGeometry args={[0.2, 4, 20]} />
-        <meshStandardMaterial color="#ffffff" />
+        <meshStandardMaterial color="#d3e4fd" />
       </mesh>
       
       <mesh position={[10, 2, 0]} castShadow receiveShadow>
         <boxGeometry args={[0.2, 4, 20]} />
-        <meshStandardMaterial color="#ffffff" />
+        <meshStandardMaterial color="#d3e4fd" />
       </mesh>
       
       {/* Interactive objects */}
@@ -546,31 +546,41 @@ const FactoryEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: strin
   
   return (
     <>
+      {/* Add blue sky to factory environment */}
+      <Sky 
+        distance={450000} 
+        sunPosition={[0, 1, 0]} 
+        inclination={0.5}
+        azimuth={0.25}
+        turbidity={8}
+        rayleigh={0.5}
+      />
+      
       {/* Factory floor - Brightened */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
         <planeGeometry args={[50, 50]} />
         <meshStandardMaterial color="#777777" />
       </mesh>
       
-      {/* Factory walls - Brightened */}
+      {/* Factory walls - Changed to light green */}
       <mesh position={[0, 3, -15]} castShadow receiveShadow>
         <boxGeometry args={[30, 6, 0.3]} />
-        <meshStandardMaterial color="#a0a0a0" />
+        <meshStandardMaterial color="#f2fce2" />
       </mesh>
       
       <mesh position={[0, 3, 15]} castShadow receiveShadow>
         <boxGeometry args={[30, 6, 0.3]} />
-        <meshStandardMaterial color="#a0a0a0" />
+        <meshStandardMaterial color="#f2fce2" />
       </mesh>
       
       <mesh position={[-15, 3, 0]} castShadow receiveShadow>
         <boxGeometry args={[0.3, 6, 30]} />
-        <meshStandardMaterial color="#a0a0a0" />
+        <meshStandardMaterial color="#f2fce2" />
       </mesh>
       
       <mesh position={[15, 3, 0]} castShadow receiveShadow>
         <boxGeometry args={[0.3, 6, 30]} />
-        <meshStandardMaterial color="#a0a0a0" />
+        <meshStandardMaterial color="#f2fce2" />
       </mesh>
       
       {/* Industrial machinery - Brightened */}
@@ -776,31 +786,41 @@ const WarehouseEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: str
   
   return (
     <>
+      {/* Add blue sky to warehouse environment */}
+      <Sky 
+        distance={450000} 
+        sunPosition={[0, 1, 0]} 
+        inclination={0.4}
+        azimuth={0.3}
+        turbidity={12}
+        rayleigh={0.7}
+      />
+      
       {/* Warehouse floor - Brightened */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
         <planeGeometry args={[50, 50]} />
         <meshStandardMaterial color="#555555" />
       </mesh>
       
-      {/* Warehouse walls - Brightened */}
+      {/* Warehouse walls - Changed to soft peach */}
       <mesh position={[0, 4, -15]} castShadow receiveShadow>
         <boxGeometry args={[30, 8, 0.3]} />
-        <meshStandardMaterial color="#777777" />
+        <meshStandardMaterial color="#fde1d3" />
       </mesh>
       
       <mesh position={[0, 4, 15]} castShadow receiveShadow>
         <boxGeometry args={[30, 8, 0.3]} />
-        <meshStandardMaterial color="#777777" />
+        <meshStandardMaterial color="#fde1d3" />
       </mesh>
       
       <mesh position={[-15, 4, 0]} castShadow receiveShadow>
         <boxGeometry args={[0.3, 8, 30]} />
-        <meshStandardMaterial color="#777777" />
+        <meshStandardMaterial color="#fde1d3" />
       </mesh>
       
       <mesh position={[15, 4, 0]} castShadow receiveShadow>
         <boxGeometry args={[0.3, 8, 30]} />
-        <meshStandardMaterial color="#777777" />
+        <meshStandardMaterial color="#fde1d3" />
       </mesh>
       
       {/* Shelving units */}
