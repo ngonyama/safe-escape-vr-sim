@@ -515,8 +515,10 @@ const OfficeEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: string
       {createOfficeWorker([14, 0, -8.5], Math.PI / 3)}
       {createOfficeWorker([15.5, 0, -7], -Math.PI / 4)}
 
-      {/* Animated Fire Image in place of the flame */}
-      <AnimatedFireImage flameRef={flameRef} position={[0, 0.55, 2]} />
+      {/* Animated Fire */}
+      <group ref={flameRef} position={[0, 0.55, 2]}>
+        <FireEffect />
+      </group>
       
       {/* Enhanced Lighting */}
       <ambientLight intensity={1.2} /> 
@@ -568,48 +570,46 @@ const EmergencyExitSign = ({ position }: { position: [number, number, number] })
   );
 };
 
-// Fixed AnimatedFireImage component
-const AnimatedFireImage = ({ flameRef, position }: { flameRef: React.RefObject<THREE.Group>, position: [number, number, number] }) => {
-  // Load the fire image texture
+// New improved fire effect component
+const FireEffect = () => {
   const fireTexture = useTexture('/scenarios/fire.jpg');
+  const flameRef = useRef<THREE.Group>(new THREE.Group());
   
   useFrame(({ clock }) => {
+    const time = clock.getElapsedTime();
+    
+    // More complex animation for the fire
     if (flameRef.current) {
-      const time = clock.getElapsedTime();
-      // Add more complex animation for the fire
+      // Add subtle swaying motion
       flameRef.current.rotation.y = Math.sin(time * 1.5) * 0.2;
-      flameRef.current.position.y = position[1] + Math.sin(time * 3) * 0.05;
       
-      // Make the fire sway slightly
-      flameRef.current.rotation.z = Math.sin(time * 2) * 0.05;
+      // Add vertical pulsing
+      flameRef.current.position.y = Math.sin(time * 3) * 0.05;
+      
+      // Vary the scale slightly over time for "breathing" effect
+      const scaleX = 1 + Math.sin(time * 2.5) * 0.1;
+      const scaleY = 1 + Math.cos(time * 3.2) * 0.15;
+      flameRef.current.scale.set(scaleX, scaleY, 1);
     }
   });
   
   return (
-    <group ref={flameRef} position={position}>
-      {/* Create a billboarded plane that always faces the camera */}
+    <group ref={flameRef}>
+      {/* Billboard ensures the fire always faces the camera */}
       <Billboard>
         <mesh>
           <planeGeometry args={[1, 1.5]} />
-          <meshStandardMaterial 
+          <meshBasicMaterial 
             map={fireTexture} 
             transparent={true} 
-            emissive="#ff3300"
-            emissiveIntensity={2}
+            opacity={1}
             side={THREE.DoubleSide}
+            depthWrite={false}
           />
         </mesh>
       </Billboard>
       
-      {/* Light emitted by the fire */}
-      <pointLight 
-        color="#ff5500" 
-        intensity={2} 
-        distance={5}
-        decay={2}
-      />
-      
-      {/* Flickering light for ambience */}
+      {/* Dynamic point light for the fire */}
       <FlickeringLight position={[0, 0.5, 0]} />
     </group>
   );
@@ -643,18 +643,34 @@ const FlickeringLight = ({ position }: { position: [number, number, number] }) =
         0.1 * Math.sin(time * 18.7);
       
       lightRef.current.intensity = flicker * 2;
+      
+      // Slightly vary the light color to simulate varying flame temperature
+      const hue = 0.1 + Math.sin(time * 3) * 0.02; // Vary between orange and red
+      lightRef.current.color.setHSL(hue, 1, 0.5);
     }
   });
   
   return (
-    <pointLight 
-      ref={lightRef} 
-      position={position} 
-      color="#ff7700" 
-      intensity={2} 
-      distance={3}
-      decay={2}
-    />
+    <>
+      {/* Main fire light */}
+      <pointLight 
+        ref={lightRef} 
+        position={position} 
+        color="#ff7700" 
+        intensity={2} 
+        distance={4}
+        decay={2}
+      />
+      
+      {/* Subtle ambient glow */}
+      <pointLight 
+        position={[position[0], position[1] - 0.2, position[2]]} 
+        color="#ff3300" 
+        intensity={0.8} 
+        distance={2}
+        decay={3}
+      />
+    </>
   );
 };
 
