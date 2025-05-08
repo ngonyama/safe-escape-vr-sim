@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { OrbitControls, useGLTF, Text, Html as DreiHtml, useTexture, Sky } from '@react-three/drei';
 import * as THREE from 'three';
-import { Flame, FireExtinguisher, EmergencyExit } from 'lucide-react';
+import { Flame, FireExtinguisher } from 'lucide-react';
 
 // Scene components for different environments
 const OfficeEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: string) => void }) => {
@@ -263,35 +263,8 @@ const OfficeEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: string
           <meshStandardMaterial color="#33cc33" />
         </mesh>
         
-        {/* White border */}
-        <mesh position={[0, 0, 0.08]}>
-          <boxGeometry args={[1.7, 0.5, 0.01]} />
-          <meshStandardMaterial color="#ffffff" />
-        </mesh>
-        
-        {/* Text and symbol */}
-        <Text 
-          position={[0, 0, 0.1]}
-          fontSize={0.2}
-          color="white"
-          anchorX="center"
-          anchorY="middle"
-        >
-          EMERGENCY EXIT
-        </Text>
-        
-        {/* Running figure with arrow */}
-        <mesh position={[-0.6, 0, 0.1]}>
-          <planeGeometry args={[0.3, 0.3]} />
-          <meshBasicMaterial color="#33cc33" />
-        </mesh>
-        
-        <mesh position={[-0.6, 0, 0.11]}>
-          <planeGeometry args={[0.25, 0.25]} />
-          <meshBasicMaterial>
-            <EmergencyExitIcon />
-          </meshBasicMaterial>
-        </mesh>
+        {/* Add the emergency exit sign using the uploaded image */}
+        <EmergencyExitSign position={[0, 0, 0.1]} />
         
         {/* Add light to make the sign glow */}
         <pointLight
@@ -478,16 +451,19 @@ const OfficeEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: string
   );
 };
 
-// Custom component for the emergency exit icon
-const EmergencyExitIcon = () => {
-  const texture = useTexture('/lovable-uploads/emergency-exit-icon.png');
+// Component for using the uploaded emergency exit sign image
+const EmergencyExitSign = ({ position }: { position: [number, number, number] }) => {
+  const texture = useTexture('/lovable-uploads/e5e3a454-a199-46f8-bb1d-dc9d994cd99c.png');
+  
   return (
-    <meshBasicMaterial 
-      map={texture} 
-      transparent={true}
-      opacity={1}
-      color="#ffffff"
-    />
+    <mesh position={position} rotation={[0, 0, 0]}>
+      <planeGeometry args={[1.6, 0.5]} />
+      <meshBasicMaterial 
+        map={texture} 
+        transparent={true}
+        opacity={1}
+      />
+    </mesh>
   );
 };
 
@@ -767,6 +743,26 @@ const FactoryEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: strin
         label="Exit Door"
       />
       
+      {/* Emergency Exit Sign above the door */}
+      <group position={[14.9, 3, -5]}>
+        {/* Sign background */}
+        <mesh position={[0, 0, 0.05]} castShadow>
+          <boxGeometry args={[1.8, 0.6, 0.05]} />
+          <meshStandardMaterial color="#33cc33" />
+        </mesh>
+        
+        {/* Add the emergency exit sign using the uploaded image */}
+        <EmergencyExitSign position={[0, 0, 0.1]} />
+        
+        {/* Add light to make the sign glow */}
+        <pointLight
+          position={[0, 0, 0.3]}
+          intensity={0.5}
+          distance={1}
+          color="#33ff33"
+        />
+      </group>
+      
       {/* Enhanced Lighting */}
       {/* Doubled from 0.3 */}
       <ambientLight intensity={0.6} /> 
@@ -1005,6 +1001,26 @@ const WarehouseEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: str
         onInteract={onCompleteTask}
         label="Exit Door"
       />
+      
+      {/* Emergency Exit Sign above the door */}
+      <group position={[14.9, 3, -5]}>
+        {/* Sign background */}
+        <mesh position={[0, 0, 0.05]} castShadow>
+          <boxGeometry args={[1.8, 0.6, 0.05]} />
+          <meshStandardMaterial color="#33cc33" />
+        </mesh>
+        
+        {/* Add the emergency exit sign using the uploaded image */}
+        <EmergencyExitSign position={[0, 0, 0.1]} />
+        
+        {/* Add light to make the sign glow */}
+        <pointLight
+          position={[0, 0, 0.3]}
+          intensity={0.5}
+          distance={1}
+          color="#33ff33"
+        />
+      </group>
       
       <InteractiveObject
         position={[0, 0.2, -10]}
