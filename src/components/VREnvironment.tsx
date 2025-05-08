@@ -241,6 +241,40 @@ const OfficeEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: string
     );
   };
   
+  // New function to create a TV screen with e4 logo
+  const createTVScreen = (position: [number, number, number], rotation: number = 0, scale: number = 1) => {
+    return (
+      <group position={position} rotation={[0, rotation, 0]}>
+        {/* TV Frame */}
+        <mesh castShadow>
+          <boxGeometry args={[1.6 * scale, 1.0 * scale, 0.1 * scale]} />
+          <meshStandardMaterial color="#111111" metalness={0.5} roughness={0.2} />
+        </mesh>
+        
+        {/* TV Stand */}
+        <mesh position={[0, -0.6 * scale, 0.1 * scale]} castShadow>
+          <boxGeometry args={[0.3 * scale, 0.2 * scale, 0.2 * scale]} />
+          <meshStandardMaterial color="#333333" metalness={0.3} roughness={0.4} />
+        </mesh>
+        
+        {/* TV Base */}
+        <mesh position={[0, -0.7 * scale, 0.2 * scale]} castShadow>
+          <boxGeometry args={[0.8 * scale, 0.1 * scale, 0.4 * scale]} />
+          <meshStandardMaterial color="#222222" metalness={0.3} roughness={0.4} />
+        </mesh>
+        
+        {/* TV Screen with e4 logo */}
+        <mesh position={[0, 0, 0.051 * scale]}>
+          <planeGeometry args={[1.5 * scale, 0.9 * scale]} />
+          <meshStandardMaterial color="#000000" emissive="#ffffff" emissiveIntensity={0.3} />
+        </mesh>
+        
+        {/* e4 Logo on screen */}
+        <E4Logo position={[0, 0, 0.052 * scale]} scale={scale * 0.6} />
+      </group>
+    );
+  };
+  
   return (
     <>
       {/* Blue sky */}
@@ -279,6 +313,16 @@ const OfficeEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: string
         <boxGeometry args={[0.2, 4, 20]} />
         <meshStandardMaterial color="#d3e4fd" />
       </mesh>
+      
+      {/* Add TV screens to the office with e4 logo */}
+      {/* TV on the left wall */}
+      {createTVScreen([-9.9, 2, -3], Math.PI / 2, 1.2)}
+      
+      {/* TV on the right wall */}
+      {createTVScreen([9.9, 2, 3], -Math.PI / 2, 1.2)}
+      
+      {/* TV on the back wall */}
+      {createTVScreen([3, 2, -9.9], 0, 1.5)}
       
       {/* Interactive objects */}
       {/* Exit door */}
@@ -488,6 +532,23 @@ const OfficeEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: string
       <pointLight position={[-5, 5, 0]} intensity={0.8} color="#fffaea" />
       <pointLight position={[5, 3, -5]} intensity={0.8} color="#eaffff" />
     </>
+  );
+};
+
+// E4 Logo component
+const E4Logo = ({ position, scale = 1 }: { position: [number, number, number], scale?: number }) => {
+  // Use the uploaded e4 logo
+  const texture = useTexture('/lovable-uploads/0169e8d3-306e-4817-8bf9-0cd442ad637d.png');
+  
+  return (
+    <mesh position={position}>
+      <planeGeometry args={[1 * scale, 1 * scale]} />
+      <meshBasicMaterial 
+        map={texture} 
+        transparent={true}
+        opacity={1}
+      />
+    </mesh>
   );
 };
 
@@ -707,6 +768,40 @@ const FactoryEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: strin
     );
   };
   
+  // New function to create a TV screen with e4 logo for the factory
+  const createTVScreen = (position: [number, number, number], rotation: number = 0, scale: number = 1) => {
+    return (
+      <group position={position} rotation={[0, rotation, 0]}>
+        {/* TV Frame */}
+        <mesh castShadow>
+          <boxGeometry args={[1.6 * scale, 1.0 * scale, 0.1 * scale]} />
+          <meshStandardMaterial color="#111111" metalness={0.5} roughness={0.2} />
+        </mesh>
+        
+        {/* TV Stand */}
+        <mesh position={[0, -0.6 * scale, 0.1 * scale]} castShadow>
+          <boxGeometry args={[0.3 * scale, 0.2 * scale, 0.2 * scale]} />
+          <meshStandardMaterial color="#333333" metalness={0.3} roughness={0.4} />
+        </mesh>
+        
+        {/* TV Base */}
+        <mesh position={[0, -0.7 * scale, 0.2 * scale]} castShadow>
+          <boxGeometry args={[0.8 * scale, 0.1 * scale, 0.4 * scale]} />
+          <meshStandardMaterial color="#222222" metalness={0.3} roughness={0.4} />
+        </mesh>
+        
+        {/* TV Screen with e4 logo */}
+        <mesh position={[0, 0, 0.051 * scale]}>
+          <planeGeometry args={[1.5 * scale, 0.9 * scale]} />
+          <meshStandardMaterial color="#000000" emissive="#ffffff" emissiveIntensity={0.3} />
+        </mesh>
+        
+        {/* e4 Logo on screen */}
+        <E4Logo position={[0, 0, 0.052 * scale]} scale={scale * 0.6} />
+      </group>
+    );
+  };
+  
   return (
     <>
       {/* Add blue sky to factory environment */}
@@ -745,6 +840,16 @@ const FactoryEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: strin
         <boxGeometry args={[0.3, 6, 30]} />
         <meshStandardMaterial color="#f2fce2" />
       </mesh>
+      
+      {/* Add TV screens to the factory with e4 logo */}
+      {/* TV on the left wall */}
+      {createTVScreen([-14.9, 3, -5], Math.PI / 2, 1.2)}
+      
+      {/* TV on the right wall */}
+      {createTVScreen([14.9, 3, 5], -Math.PI / 2, 1.2)}
+      
+      {/* TV on the back wall */}
+      {createTVScreen([-5, 3, -14.9], 0, 1.5)}
       
       {/* Industrial machinery - Brightened */}
       <mesh position={[-5, 1.2, -5]} castShadow>
@@ -1007,6 +1112,40 @@ const WarehouseEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: str
     );
   };
   
+  // New function to create a TV screen with e4 logo for the warehouse
+  const createTVScreen = (position: [number, number, number], rotation: number = 0, scale: number = 1) => {
+    return (
+      <group position={position} rotation={[0, rotation, 0]}>
+        {/* TV Frame */}
+        <mesh castShadow>
+          <boxGeometry args={[1.6 * scale, 1.0 * scale, 0.1 * scale]} />
+          <meshStandardMaterial color="#111111" metalness={0.5} roughness={0.2} />
+        </mesh>
+        
+        {/* TV Stand */}
+        <mesh position={[0, -0.6 * scale, 0.1 * scale]} castShadow>
+          <boxGeometry args={[0.3 * scale, 0.2 * scale, 0.2 * scale]} />
+          <meshStandardMaterial color="#333333" metalness={0.3} roughness={0.4} />
+        </mesh>
+        
+        {/* TV Base */}
+        <mesh position={[0, -0.7 * scale, 0.2 * scale]} castShadow>
+          <boxGeometry args={[0.8 * scale, 0.1 * scale, 0.4 * scale]} />
+          <meshStandardMaterial color="#222222" metalness={0.3} roughness={0.4} />
+        </mesh>
+        
+        {/* TV Screen with e4 logo */}
+        <mesh position={[0, 0, 0.051 * scale]}>
+          <planeGeometry args={[1.5 * scale, 0.9 * scale]} />
+          <meshStandardMaterial color="#000000" emissive="#ffffff" emissiveIntensity={0.3} />
+        </mesh>
+        
+        {/* e4 Logo on screen */}
+        <E4Logo position={[0, 0, 0.052 * scale]} scale={scale * 0.6} />
+      </group>
+    );
+  };
+  
   return (
     <>
       {/* Add blue sky to warehouse environment */}
@@ -1045,6 +1184,16 @@ const WarehouseEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: str
         <boxGeometry args={[0.3, 8, 30]} />
         <meshStandardMaterial color="#fde1d3" />
       </mesh>
+      
+      {/* Add TV screens to the warehouse with e4 logo */}
+      {/* TV on the left wall */}
+      {createTVScreen([-14.9, 4, -8], Math.PI / 2, 1.5)}
+      
+      {/* TV on the right wall */}
+      {createTVScreen([14.9, 4, 8], -Math.PI / 2, 1.5)}
+      
+      {/* TV on the back wall */}
+      {createTVScreen([8, 4, -14.9], 0, 1.5)}
       
       {/* Shelving units */}
       {createShelf(-5, -8)}
