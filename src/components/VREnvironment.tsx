@@ -145,6 +145,65 @@ const OfficeEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: string
     );
   };
   
+  // New function to create assembly point sign
+  const createAssemblyPointSign = (position: [number, number, number]) => {
+    return (
+      <group position={position}>
+        {/* Sign post */}
+        <mesh position={[0, 1.5, 0]} castShadow>
+          <boxGeometry args={[0.1, 3, 0.1]} />
+          <meshStandardMaterial color="#555555" />
+        </mesh>
+        
+        {/* Sign board */}
+        <mesh position={[0, 3, 0]} castShadow>
+          <boxGeometry args={[1.2, 1.2, 0.05]} />
+          <meshStandardMaterial color="#4CAF50" />
+        </mesh>
+        
+        {/* Assembly point text/symbol */}
+        <group position={[0, 3, 0.03]}>
+          <Text 
+            position={[0, 0.3, 0]} 
+            fontSize={0.15}
+            color="white"
+            anchorX="center"
+            anchorY="middle"
+          >
+            ASSEMBLY
+          </Text>
+          <Text 
+            position={[0, 0.1, 0]} 
+            fontSize={0.15}
+            color="white"
+            anchorX="center"
+            anchorY="middle"
+          >
+            POINT
+          </Text>
+          
+          {/* Simple human icons */}
+          <mesh position={[0, -0.2, 0]}>
+            <circleGeometry args={[0.4, 32]} />
+            <meshBasicMaterial color="white" />
+          </mesh>
+          <mesh position={[0, -0.2, 0.01]}>
+            <circleGeometry args={[0.35, 32]} />
+            <meshBasicMaterial color="#4CAF50" />
+          </mesh>
+          <mesh position={[0, -0.2, 0.02]}>
+            <boxGeometry args={[0.05, 0.2, 0.01]} />
+            <meshBasicMaterial color="white" />
+          </mesh>
+          <mesh position={[0, -0.3, 0.02]}>
+            <boxGeometry args={[0.3, 0.05, 0.01]} />
+            <meshBasicMaterial color="white" />
+          </mesh>
+        </group>
+      </group>
+    );
+  };
+  
   return (
     <>
       {/* Blue sky */}
@@ -252,7 +311,7 @@ const OfficeEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: string
         <meshStandardMaterial color="#7a7a7a" />
       </mesh>
       
-      {/* Add multiple desks with computers and office workers */}
+      {/* Add desks with computers but without workers */}
       {/* Desk 1 (main desk) */}
       <mesh position={[0, 0.4, 2]} castShadow>
         <boxGeometry args={[1.2, 0.1, 1.2]} />
@@ -269,9 +328,6 @@ const OfficeEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: string
         <meshStandardMaterial color="#1a1a1a" />
       </mesh>
       
-      {/* Person sitting at main desk - Fixed position */}
-      {createOfficeWorker([0, 0.4, 2.6], Math.PI)}
-
       {/* Second desk to the left */}
       <mesh position={[-2, 0.4, 2]} castShadow>
         <boxGeometry args={[1.2, 0.1, 1.2]} />
@@ -288,9 +344,6 @@ const OfficeEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: string
         <meshStandardMaterial color="#1a1a1a" />
       </mesh>
       
-      {/* Person sitting at second desk - Fixed position */}
-      {createOfficeWorker([-2, 0.4, 2.6], Math.PI)}
-
       {/* Third desk to the right */}
       <mesh position={[2, 0.4, 2]} castShadow>
         <boxGeometry args={[1.2, 0.1, 1.2]} />
@@ -307,9 +360,6 @@ const OfficeEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: string
         <meshStandardMaterial color="#1a1a1a" />
       </mesh>
       
-      {/* Person sitting at third desk - Fixed position */}
-      {createOfficeWorker([2, 0.4, 2.6], Math.PI)}
-      
       {/* Desk row in the back */}
       <mesh position={[-3, 0.4, 4]} castShadow>
         <boxGeometry args={[1.2, 0.1, 1.2]} />
@@ -321,9 +371,6 @@ const OfficeEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: string
         <boxGeometry args={[0.5, 0.3, 0.05]} />
         <meshStandardMaterial color="#2b2b2b" />
       </mesh>
-      
-      {/* Person at back desk - Fixed position */}
-      {createOfficeWorker([-3, 0.4, 4.6], Math.PI)}
       
       {/* Another back desk */}
       <mesh position={[0, 0.4, 4]} castShadow>
@@ -337,9 +384,6 @@ const OfficeEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: string
         <meshStandardMaterial color="#2b2b2b" />
       </mesh>
       
-      {/* Person at another back desk - Fixed position */}
-      {createOfficeWorker([0, 0.4, 4.6], Math.PI)}
-      
       {/* One more back desk */}
       <mesh position={[3, 0.4, 4]} castShadow>
         <boxGeometry args={[1.2, 0.1, 1.2]} />
@@ -352,14 +396,20 @@ const OfficeEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: string
         <meshStandardMaterial color="#2b2b2b" />
       </mesh>
       
-      {/* Person at one more back desk - Fixed position */}
-      {createOfficeWorker([3, 0.4, 4.6], Math.PI)}
-
-      {/* Add more workers in the room - Additional standing workers */}
-      {createOfficeWorker([-1, 0, -2], Math.PI / 4)}
-      {createOfficeWorker([1.5, 0, -1], -Math.PI / 6)}
-      {createOfficeWorker([-3, 0, 0], Math.PI / 2)}
-      {createOfficeWorker([4, 0, 3], -Math.PI / 3)}
+      {/* Assembly point sign outside the building */}
+      {createAssemblyPointSign([15, 0, -8])}
+      
+      {/* Workers gathered at the assembly point */}
+      {createOfficeWorker([14, 0, -7], Math.PI / 4)}
+      {createOfficeWorker([13.5, 0, -8], -Math.PI / 6)}
+      {createOfficeWorker([15.5, 0, -8.5], Math.PI / 2)}
+      {createOfficeWorker([14.5, 0, -9], -Math.PI / 3)}
+      {createOfficeWorker([16, 0, -7.5], Math.PI / 5)}
+      {createOfficeWorker([13, 0, -9], -Math.PI / 5)}
+      {createOfficeWorker([15, 0, -10], Math.PI / 8)}
+      {createOfficeWorker([16.5, 0, -9], -Math.PI / 8)}
+      {createOfficeWorker([14, 0, -8.5], Math.PI / 3)}
+      {createOfficeWorker([15.5, 0, -7], -Math.PI / 4)}
 
       {/* Animated Fire Image in place of the flame */}
       <AnimatedFireImage flameRef={flameRef} position={[0, 0.55, 2]} />
