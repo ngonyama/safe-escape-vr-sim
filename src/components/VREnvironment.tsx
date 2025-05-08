@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { OrbitControls, useGLTF, Text, Html as DreiHtml, useTexture } from '@react-three/drei';
+import { OrbitControls, useGLTF, Text, Html as DreiHtml, useTexture, Sky } from '@react-three/drei';
 import * as THREE from 'three';
 import { Flame, FireExtinguisher } from 'lucide-react';
 
@@ -147,6 +147,16 @@ const OfficeEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: string
   
   return (
     <>
+      {/* Blue sky */}
+      <Sky 
+        distance={450000} 
+        sunPosition={[0, 1, 0]} 
+        inclination={0.6}
+        azimuth={0.25}
+        turbidity={10}
+        rayleigh={0.5}
+      />
+      
       {/* Floor - Brightened */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
         <planeGeometry args={[50, 50]} />
@@ -902,6 +912,7 @@ interface InteractiveObjectProps {
   onInteract: (taskId: string) => void;
   label: string;
   transparent?: boolean;
+  rotation?: [number, number, number];
 }
 
 const InteractiveObject = ({
@@ -913,6 +924,7 @@ const InteractiveObject = ({
   onInteract,
   label,
   transparent = false,
+  rotation = [0, 0, 0],
 }: InteractiveObjectProps) => {
   const [hovered, setHovered] = useState(false);
   const [interacted, setInteracted] = useState(false);
@@ -929,6 +941,7 @@ const InteractiveObject = ({
     <mesh
       ref={meshRef}
       position={position}
+      rotation={rotation}
       onClick={handleClick}
       onPointerOver={() => setHovered(true)}
       onPointerOut={() => setHovered(false)}
