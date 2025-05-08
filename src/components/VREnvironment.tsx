@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef, useState } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { OrbitControls, useGLTF, Text, Html as DreiHtml, useTexture, Sky } from '@react-three/drei';
@@ -1234,4 +1235,30 @@ const Html = ({ children, position }: {
   children: React.ReactNode;
   position: [number, number, number]; 
 }) => {
- 
+  return (
+    <DreiHtml position={position} center>
+      <div className="html-label">{children}</div>
+    </DreiHtml>
+  );
+};
+
+// Root VREnvironment component
+const VREnvironment = ({
+  environmentType = 'office',
+  scenarioType = '',
+  onCompleteTask,
+}: {
+  environmentType: string;
+  scenarioType: string;
+  onCompleteTask: (taskId: string) => void;
+}) => {
+  return (
+    <Canvas shadows camera={{ position: [0, 0, 0], fov: 60 }}>
+      {environmentType === 'office' && <OfficeEnvironment onCompleteTask={onCompleteTask} />}
+      {environmentType === 'factory' && <FactoryEnvironment onCompleteTask={onCompleteTask} />}
+      {environmentType === 'warehouse' && <WarehouseEnvironment onCompleteTask={onCompleteTask} />}
+    </Canvas>
+  );
+};
+
+export default VREnvironment;
