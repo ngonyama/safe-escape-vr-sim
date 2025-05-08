@@ -204,6 +204,45 @@ const OfficeEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: string
     );
   };
   
+  // New function to create a first aid kit model
+  const createFirstAidKit = (position: [number, number, number]) => {
+    return (
+      <group position={position}>
+        {/* Main first aid kit box */}
+        <mesh castShadow position={[0, 0.2, 0]}>
+          <boxGeometry args={[0.8, 0.4, 0.5]} />
+          <meshStandardMaterial color="#ffffff" />
+        </mesh>
+        
+        {/* Red cross on top */}
+        <mesh castShadow position={[0, 0.4, 0]}>
+          <boxGeometry args={[0.4, 0.05, 0.1]} />
+          <meshStandardMaterial color="#e53e3e" />
+        </mesh>
+        <mesh castShadow position={[0, 0.4, 0]}>
+          <boxGeometry args={[0.1, 0.05, 0.4]} />
+          <meshStandardMaterial color="#e53e3e" />
+        </mesh>
+        
+        {/* Red cross on front */}
+        <mesh castShadow position={[0, 0.2, 0.251]}>
+          <boxGeometry args={[0.3, 0.05, 0.01]} />
+          <meshStandardMaterial color="#e53e3e" />
+        </mesh>
+        <mesh castShadow position={[0, 0.2, 0.251]}>
+          <boxGeometry args={[0.05, 0.3, 0.01]} />
+          <meshStandardMaterial color="#e53e3e" />
+        </mesh>
+        
+        {/* Handle */}
+        <mesh castShadow position={[0, 0.45, 0]}>
+          <boxGeometry args={[0.5, 0.1, 0.1]} />
+          <meshStandardMaterial color="#d1d1d1" />
+        </mesh>
+      </group>
+    );
+  };
+  
   return (
     <>
       {/* Blue sky */}
@@ -418,6 +457,9 @@ const OfficeEnvironment = ({ onCompleteTask }: { onCompleteTask: (taskId: string
       
       {/* Assembly point sign outside the building */}
       {createAssemblyPointSign([15, 0, -8])}
+      
+      {/* First Aid Kit at the assembly point */}
+      {createFirstAidKit([15.5, 0, -6.5])}
       
       {/* Workers gathered at the assembly point */}
       {createOfficeWorker([14, 0, -7], Math.PI / 4)}
