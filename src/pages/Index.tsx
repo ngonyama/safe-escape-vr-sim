@@ -48,16 +48,9 @@ const Index = () => {
       <header className="w-full py-6 px-4 sm:px-6 lg:px-8 bg-white shadow-sm">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <div className="flex items-center">
-            <img src="/logo.svg" alt="SafeEscape VR" className="h-8 w-auto mr-3" />
-            <h1 className="text-2xl font-bold text-safety-gray">SafeEscape VR</h1>
+            <img src="/logo.png" alt="SafeEscape VR" className="h-8 w-auto mr-2" />
+            <h1 className="text-2xl font-bold text-safety-gray">VR</h1>
           </div>
-          <nav>
-            <ul className="flex space-x-8">
-              <li><Button variant="ghost" className="text-safety-gray">How It Works</Button></li>
-              <li><Button variant="ghost" className="text-safety-gray">About</Button></li>
-              <li><Button variant="ghost" className="text-safety-gray">Help</Button></li>
-            </ul>
-          </nav>
         </div>
       </header>
 
@@ -65,7 +58,7 @@ const Index = () => {
       <section className="w-full py-16 px-4 sm:px-6 lg:px-8 animate-fade-in">
         <div className="max-w-4xl mx-auto text-center">
           <h1 className="text-4xl sm:text-5xl font-bold text-safety-gray mb-6">
-            Virtual Safety Training
+            Safety Simulation
           </h1>
           <p className="text-xl text-gray-600 mb-8">
             Practice emergency procedures in realistic 3D environments. 
